@@ -1,0 +1,1 @@
+{"name":"web-tycoon-server","version":"1.0.0","description":"Web Tycoon multiplayer game server","type":"module","main":"server.js","scripts":{"start":"node server.js","dev":"node --watch server.js"},"dependencies":{"dotenv":"^17.4.2","mariadb":"^3.5.3","socket.io":"^4.8.1"}}
