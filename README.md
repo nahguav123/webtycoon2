@@ -1,4 +1,4 @@
-# Web Tycoon 2
+# Web Tycoon 2 - Main Branch
 
 Web Tycoon 2 is a browser-based business simulation game where players build and manage their own online businesses. Players can create websites, purchase domains and hosting, manage finances and so on. It was inspired by the original webtycoon that was abandoned by the developers.
 
