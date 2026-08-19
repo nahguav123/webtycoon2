@@ -2,9 +2,9 @@
 
 Web Tycoon 2 is a browser-based business simulation game where players build and manage their own online businesses. Players can create websites, purchase domains and hosting, manage finances and so on. It was inspired by the original webtycoon that was abandoned by the developers.
 
-> 🚧 **Development Status:** Web Tycoon is currently under active development.
+> **Development Status:** Web Tycoon is currently under active development.
 
-## 🎮 Overview
+## Overview
 
 Web Tycoon is designed around the idea of running an online business from the ground up.
 
@@ -52,7 +52,7 @@ The game is being developed with a server-authoritative architecture so that imp
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 Web Tycoon is separated into client-side and server-side components.
 
