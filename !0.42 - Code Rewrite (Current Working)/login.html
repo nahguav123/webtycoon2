@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Log In - Web Tycoon</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+  <div id="login-app" class="login-app">
+    <form class="login-form" @submit.prevent="submitLogin">
+      <h1 class="login-h1">Log In</h1>
+      <input v-model="login.username" placeholder="Username" class="login-field" type="text" required>
+      <input v-model="login.password" placeholder="Password" class="login-field" type="password" required>
+
+      <button class="login-button" type="submit">Log In</button>
+      <div class="login-form-message" :style="{color: loginMessageColor}">{{ loginMessage }}</div>
+      <div class="login-footer-note">
+        Don't have an account? <a href="register.html">Register here</a>.
+      </div>
+    </form>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/util.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/api.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

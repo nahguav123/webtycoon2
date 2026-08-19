@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" class="team-html">
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Tycoon</title>
+
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="team-body">
+
+<div id="team-app" class="team-app">
+
+  <!-- Game View -->
+  <div class="team-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <button class="sidebar-logout-button" @click="logout" title="Log Out">⚙️</button>
+      </div>
+
+      <div class="sidebar-profile" v-if="user">
+        <div class="sidebar-profile-img-container">
+          <img src="stockavatar.jpg" />
+          <span class="sidebar-profile-level">Lv. {{ level }}</span>
+        </div>
+
+        <h3 class="sidebar-username-h3">{{ user.username }}</h3>
+
+        <div class="sidebar-badges">
+          <span>${{ Math.floor(money).toLocaleString() }}</span>
+          <span>₩{{ webdollars }}</span>
+        </div>
+      </div>
+
+      <nav>
+        <a class="sidebar-menu" href="websites.html">Websites <span class="sidebar-count">{{ websiteCount }}</span></a>
+        <a class="sidebar-menu active" href="team.html">Team <span class="sidebar-count">{{ teamCount }}/6</span></a>
+        <a class="sidebar-menu" href="statistics.html">Statistics</a>
+        <a class="sidebar-menu" href="quests.html">Quests</a>
+        <a class="sidebar-menu" href="ratings.html">Ratings</a>
+        <a class="sidebar-menu" href="holdings.html">Holdings</a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="team-main">
+
+      <!-- Top Bar -->
+      <header class="team-topbar">
+        <div class="team-topbar-left">
+          <h2>Team Management</h2>
+          <p class="team-topbar-subtitle">{{ teamCount }}/{{ maxTeam }} employees</p>
+        </div>
+
+        <div class="team-topbar-right">
+          <nav>
+            <button class="team-hire-button" @click="showHirePanel = !showHirePanel" :disabled="teamCount >= maxTeam">
+              Hire Employee
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Hire Panel -->
+      <section v-if="showHirePanel" class="team-hire-panel">
+        <h3>Hire New Employee</h3>
+        <p v-if="message" class="team-message">{{ message }}</p>
+        
+        <div class="team-employee-options">
+          <div v-for="(config, type) in employeeTypes" :key="type" class="team-hire-option">
+            <div class="team-hire-option-header">
+              <h4>{{ config.name }}</h4>
+              <span class="team-hire-cost">${{ config.cost }}</span>
+            </div>
+            <div class="team-hire-bonuses">
+              <span class="team-bonus">Design: {{ (config.designBonus * 100).toFixed(0) }}%</span>
+              <span class="team-bonus">Frontend: {{ (config.frontendBonus * 100).toFixed(0) }}%</span>
+              <span class="team-bonus">Backend: {{ (config.backendBonus * 100).toFixed(0) }}%</span>
+            </div>
+            <button 
+              class="team-hire-confirm-button" 
+              @click="hireEmployee(type)"
+              :disabled="money < config.cost || teamCount >= maxTeam"
+            >
+              Hire {{ config.name }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Team List -->
+      <section class="team-section">
+        <div class="team-list">
+          <div v-if="employees.length === 0" class="team-empty">
+            <p>No employees yet. Hire your first employee to get started!</p>
+          </div>
+
+          <div v-for="employee in employees" :key="employee.employeeid" class="team-card">
+            
+            <!-- Card Header -->
+            <div class="team-card-header">
+              <div class="team-card-title">
+                <h3>{{ employee.name }}</h3>
+                <span class="team-card-type">{{ getEmployeeTypeLabel(employee.type) }}</span>
+              </div>
+              <button class="team-card-fire-button" @click="fireEmployee(employee.employeeid)" title="Fire employee">
+                🗑️
+              </button>
+            </div>
+
+            <!-- Card Stats -->
+            <div class="team-card-stats">
+              <div class="team-stat">
+                <span class="team-stat-label">Design Boost</span>
+                <span class="team-stat-value">{{ (employee.designBonus * 100).toFixed(0) }}%</span>
+              </div>
+              <div class="team-stat">
+                <span class="team-stat-label">Frontend Boost</span>
+                <span class="team-stat-value">{{ (employee.frontendBonus * 100).toFixed(0) }}%</span>
+              </div>
+              <div class="team-stat">
+                <span class="team-stat-label">Backend Boost</span>
+                <span class="team-stat-value">{{ (employee.backendBonus * 100).toFixed(0) }}%</span>
+              </div>
+            </div>
+
+            <!-- Card Assignment -->
+            <div class="team-card-assignment">
+              <label>Assign to:</label>
+              <select v-model="employee.assignedTo" @change="assignEmployee(employee.employeeid, employee.assignedTo)" class="team-assign-select">
+                <option :value="null">Unassigned</option>
+                <option v-for="site in websites" :key="site.siteid" :value="site.siteid">
+                  {{ site.sitename }}{{ site.tld }}
+                </option>
+              </select>
+              <span v-if="employee.assignedTo" class="team-assigned-badge">
+                📌 {{ getAssignedSiteName(employee.assignedTo) }}
+              </span>
+            </div>
+
+            <!-- Card Info -->
+            <div class="team-card-info">
+              <small>Hired: {{ formatDate(employee.hired) }}</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/store.js"></script>
+<script src="js/util.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/api.js"></script>
+<script src="js/realtime.js"></script>
+<script src="team.js"></script>
+</body>
+</html>

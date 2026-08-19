@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" class="site-detail-html">
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Tycoon</title>
+
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- Chart.js for Graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="site-detail-body">
+
+<div id="site-detail-app" class="site-detail-app">
+
+  <!-- Game View -->
+  <div class="site-detail-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <button class="sidebar-logout-button" @click="logout" title="Log Out">⚙️</button>
+      </div>
+
+      <div class="sidebar-profile" v-if="user">
+        <div class="sidebar-profile-img-container">
+          <img src="stockavatar.jpg" />
+          <span class="sidebar-profile-level">Lv. {{ level }}</span>
+        </div>
+
+        <h3 class="sidebar-username-h3">{{ user.username }}</h3>
+
+        <div class="sidebar-badges">
+          <span>${{ Math.floor(money).toLocaleString() }}</span>
+          <span>₩{{ webdollars }}</span>
+        </div>
+      </div>
+
+      <nav>
+        <a class="sidebar-menu active" href="websites.html">Websites <span class="sidebar-count">{{ websiteCount }}</span></a>
+        <a class="sidebar-menu" href="team.html">Team <span class="sidebar-count">{{ teamCount }}/6</span></a>
+        <a class="sidebar-menu" href="statistics.html">Statistics</a>
+        <a class="sidebar-menu" href="quests.html">Quests</a>
+        <a class="sidebar-menu" href="ratings.html">Ratings</a>
+        <a class="sidebar-menu" href="holdings.html">Holdings</a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="site-detail-main">
+
+      <!-- Top Bar -->
+      <header class="site-detail-topbar">
+        <div class="site-detail-topbar-buttons">
+          <a class="site-detail-topbar-back-button" href="websites.html">Websites</a>
+          <h2 class="site-detail-topbar-h2" v-if="website"> > {{ website.sitename }}{{ website.tld }}</h2>
+        </div>
+      </header>
+
+      <!-- Site Detail Section-->
+      <section class="site-detail-section">
+
+        <!-- Site Dashboard Card -->
+        <div class="site-detail-dashboard-card" v-if="website">
+
+          <!-- Site Stats Bar -->
+          <div class="site-detail-card-stats-bar">
+            <div class="site-detail-card-version">Version {{ website.version }}</div>
+            <div class="site-detail-card-stats-colour">
+              <div class="site-detail-stat-red">{{ Math.round(website.visitorsPerHour) }}/hr visitors</div>
+              <div class="site-detail-stat-blue">${{ website.profitPerHour }}/hr profit</div>
+            </div>
+          </div>
+
+          <!-- Site Dashboard Header -->
+          <div class="site-detail-dashboard-card-header">
+            <h4>{{ website.sitename }}{{ website.tld }}</h4>
+            <p>{{ website.siteType }} site</p>
+          </div>
+
+          <!-- 24-Hour Performance Graph -->
+          <div class="site-detail-graph-container">
+            <h4>24-Hour Performance (Past, Current & Projected)</h4>
+            <canvas id="site-detail-graph" class="site-detail-graph"></canvas>
+          </div>
+
+          <!-- Site Comments Section -->
+          <div class="site-detail-comments-box">
+            <button class="site-detail-show-comments-button" @click="showComments">
+              Show comments
+            </button>
+            <div v-if="commentsPanel" class="site-detail-show-comments-panel">
+              Comments will be here...
+            </div>
+          </div>
+
+          <!-- Site Hosting Section -->
+          <div>
+            <p>Hosting Option: <strong>{{ website.hostingOption }}</strong> (Visitor Limit: {{ hostingPlans[website.hostingOption].visitorLimit }} visitors)</p>
+            <p>Time remaining: {{ formatMinutes(website.hostingRemainingMs) }}</p>
+            <div class="site-detail-hosting-buttons">
+              <!-- Pay current hosting -->
+              <button @click="payHostingCurrent">Pay Hosting</button>
+              <!-- Change hosting -->
+              <button @click="changeHostingButton">Change Hosting</button>
+            </div>
+
+            <!-- Dropdown appears when changing hosting -->
+            <div v-if="showChangeHosting" class="site-detail-hosting-dropdown">
+              <select v-model="selectedPlan">
+                <option v-for="(plan, name) in hostingPlans" :value="name" :key="name">
+                  {{ name }} — ${{ plan.cost }} — {{ plan.hours }}h — up to {{ plan.visitorLimit }} visitors
+                </option>
+              </select>
+              <button @click="changeHostingPlan">Confirm Change</button>
+            </div>
+          </div>
+
+          <!-- Site Domain Section -->
+          <div>
+            <p>Domain: <strong>{{ website.sitename }}{{ website.tld }}</strong></p>
+            <p>Time remaining: {{ formatMinutes(website.domainRemainingMs) }}</p>
+            <div class="site-detail-domain-buttons">
+              <!-- Pay current domain -->
+              <button @click="renewDomainCurrent">Pay Domain</button>
+              <!-- Change domain -->
+              <button @click="changeDomainButton">Change Domain</button>
+            </div>
+
+            <!-- Dropdown appears when changing domain/tld -->
+            <div v-if="showChangeDomain" class="site-detail-domain-dropdown">
+              <input
+                type="text"
+                v-model="newDomainName"
+                placeholder="Domain name"
+                class="site-detail-domain-input"
+              />
+              <select v-model="newTld">
+                <option v-for="(opt, tld) in tldOptions" :value="tld" :key="tld">
+                  {{ tld }} — ${{ opt.cost }}
+                </option>
+              </select>
+              <p class="site-detail-domain-preview">
+                Preview: <strong>{{ newDomainName }}{{ newTld }}</strong>
+              </p>
+              <button @click="changeDomainConfirm">Confirm Change</button>
+            </div>
+          </div>
+
+          <p v-if="message" class="site-detail-change-hosting-message">{{ message }}</p>
+
+          <!-- Active Effects (placeholder - not yet wired up) -->
+          <div class="site-detail-effects-section">
+            <h4>Active Effects</h4>
+            <div class="site-detail-effects-list">
+              <div class="site-detail-effect-chip">N/A</div>
+              <button class="site-detail-effect-add-button">+</button>
+            </div>
+          </div>
+
+          <!-- Tasks Section -->
+          <div class="site-detail-tasks-section">
+            <h4>Development Progress</h4>
+
+            <!-- Task Card -->
+            <div class="site-detail-task-card">
+              <!-- Task Bars -->
+              <div
+                v-for="track in ['design', 'frontend', 'backend']"
+                :key="track"
+                class="site-detail-task-bar"
+              >
+                <div class="site-detail-task-left">
+                  <div class="site-detail-task-label">
+                    <span class="site-detail-task-name">{{ getWorkerName(track) }}</span>
+                    <span v-if="getEffectiveRate(track) > 0" class="site-detail-task-rate">+{{ getEffectiveRate(track).toFixed(1) }}/hr</span>
+                  </div>
+                  <button
+                    class="site-detail-task-assign"
+                    @click="toggleAssign(track)"
+                    :title="website.dev[track].ratePerHour ? 'Unassign worker' : 'Assign worker'"
+                  >{{ website.dev[track].ratePerHour ? '−' : '+' }}</button>
+                </div>
+
+                <div class="site-detail-task-bar-bg">
+                  <div
+                    class="site-detail-task-bar-fill"
+                    :class="track"
+                    :style="{ width: Math.min(100, (website.dev[track].points / website.dev[track].target) * 100) + '%' }"
+                  ></div>
+                  <span class="bar-number left">{{ Math.floor(website.dev[track].points) }}</span>
+                  <span class="bar-number right">{{ website.dev[track].target }}</span>
+                </div>
+              </div>
+
+              <!-- Overall Progress -->
+              <div class="site-detail-task-progress">
+                <span>Overall Progress</span>
+                <div class="site-detail-task-progress-bg">
+                  <div class="site-detail-task-progress-fill" :style="{ width: website.overallProgress + '%' }"></div>
+                </div>
+              </div>
+
+              <!-- Publish Button -->
+              <button
+                class="site-detail-publish-button"
+                :disabled="!website.readyToPublish"
+                @click="publishVersion"
+              >
+                Publish Version {{ website.version + 1 }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Content Creation (placeholder - not yet wired up) -->
+          <div class="site-detail-content-section">
+            <h4>Content Creation</h4>
+            <p style="color:#6b7c87; font-size:13px;">Coming soon.</p>
+          </div>
+
+          <!-- Site Advertising -->
+          <div class="site-detail-advertising-section">
+            <h4>Advertising</h4>
+            <div class="site-detail-ad-grid">
+              <div v-for="option in advertisingOptions" :key="option.id" class="site-detail-ad-box">
+                <div class="site-detail-ad-box-top">
+                  <span class="site-detail-ad-label">{{ option.name }}</span>
+                  <label class="site-detail-ad-toggle">
+                    <input type="checkbox" v-model="option.enabled" @change="toggleAdvertising(option)" />
+                    <span class="site-detail-ad-slider"></span>
+                  </label>
+                </div>
+                <p class="site-detail-ad-profit">
+                  CPM: <strong>${{ option.profit }}</strong>
+                </p>
+                <p class="site-detail-ad-impressions">
+                  {{ option.adImpressions }} impressions per hour
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <p v-else>Loading site...</p>
+      </section>
+    </main>
+
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/store.js"></script>
+<script src="js/util.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/api.js"></script>
+<script src="js/realtime.js"></script>
+<script src="sitedetail.js"></script>
+</body>
+</html>
