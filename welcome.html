@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" class="welcome-html">
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Tycoon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="welcome-body">
+  <div class="welcome-app">
+    <div class="welcome-container">
+      <h1 class="welcome-h1">Web Tycoon</h1>
+      <div class="welcome-tagline">Build your startup. Grow your empire. Rule the web.</div>
+
+      <div class="welcome-button-row-top">
+        <button class="welcome-button-play-now" onclick="playNowGuest()">Play Now (No Save)</button>
+      </div>
+
+      <div class="welcome-button-row">
+        <button class="welcome-button" onclick="window.location.href='login.html'">Log In</button>
+        <button class="welcome-button" onclick="window.location.href='register.html'">Register</button>
+      </div>
+
+      <div class="welcome-footer-note">
+        Tip: Check your finances often — cashflow wins companies.
+      </div>
+    </div>
+  </div>
+
+  <!-- Local game engine (see js/api.js for the layer to swap for a real backend) -->
+  <script src="js/config.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/util.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/api.js"></script>
+  <script src="welcome.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" class="create-website-html">
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Tycoon</title>
+
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="create-website-body">
+
+<div id="create-website-app" class="create-website-app">
+
+  <!-- Game View -->
+  <div class="create-website-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <button class="sidebar-logout-button" @click="logout" title="Log Out">⚙️</button>
+      </div>
+
+      <div class="sidebar-profile" v-if="user">
+        <div class="sidebar-profile-img-container">
+          <img src="stockavatar.jpg" />
+          <span class="sidebar-profile-level">Lv. {{ level }}</span>
+        </div>
+
+        <h3 class="sidebar-username-h3">{{ user.username }}</h3>
+
+        <div class="sidebar-badges">
+          <span>${{ Math.floor(money).toLocaleString() }}</span>
+          <span>₩{{ webdollars }}</span>
+        </div>
+      </div>
+
+      <nav>
+        <a class="sidebar-menu" href="websites.html">Websites <span class="sidebar-count">{{ websiteCount }}</span></a>
+        <a class="sidebar-menu" href="team.html">Team <span class="sidebar-count">{{ teamCount }}/6</span></a>
+        <a class="sidebar-menu" href="statistics.html">Statistics</a>
+        <a class="sidebar-menu" href="quests.html">Quests</a>
+        <a class="sidebar-menu" href="ratings.html">Ratings</a>
+        <a class="sidebar-menu" href="holdings.html">Holdings</a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="create-website-main">
+
+      <!-- Top Bar -->
+      <header class="create-website-topbar">
+        <div class="create-website-topbar-buttons">
+          <a class="create-website-topbar-back-button" href="websites.html">Websites</a>
+          <h2 class="create-website-topbar-h2"> > Creating a site</h2>
+        </div>
+      </header>
+
+      <!-- Create Website Section-->
+      <section class="create-website-section">
+
+        <!-- Create Website Form -->
+        <form @submit.prevent="createWebsite" class="create-website-form">
+
+          <!-- Row: Domain input + Preview -->
+          <div class="create-website-row">
+
+            <!-- Domain + TLD -->
+            <div class="create-website-domain-group">
+              <label class="create-website-label">Domain name</label>
+
+              <div class="create-website-domain-wrapper">
+                <input
+                  class="create-website-input"
+                  v-model="domainName"
+                  placeholder="yourdomain"
+                  required
+                />
+
+                <select class="create-website-select" v-model="tld" required>
+                  <option v-for="(opt, name) in tldOptions" :value="name" :key="name">
+                    {{ name }} — ${{ opt.cost }}
+                  </option>
+                </select>
+              </div>
+
+              <label class="create-website-info-label">
+                Choose a domain name for your site. The
+                name must be between 3 and 16 characters.
+                You can use Latin letters, numbers, and hyphens.
+              </label>
+            </div>
+
+            <!-- Live Preview -->
+            <div class="create-website-preview">
+              <p class="preview-url">
+                {{ domainName || "yourdomain" }}{{ tld }}
+              </p>
+
+              <div class="preview-card">
+                <h3>{{ domainName || "Your Website" }}</h3>
+                <p>example-page.html</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Type Section -->
+          <h3 class="create-website-type-heading">Type</h3>
+
+          <div class="create-website-type-grid">
+            <div
+              v-for="type in siteTypes"
+              :key="type"
+              class="type-card"
+              :class="{ active: siteType === type }"
+              @click="siteType = type"
+            >{{ type }}</div>
+          </div>
+
+          <!-- Submit -->
+          <button class="create-website-button" type="submit">Create Website</button>
+
+        </form>
+
+        <p v-if="message">{{ message }}</p>
+
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/store.js"></script>
+<script src="js/util.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/api.js"></script>
+<script src="js/realtime.js"></script>
+<script src="createwebsite.js"></script>
+</body>
+</html>
