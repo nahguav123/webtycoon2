@@ -1,0 +1,86 @@
+Tables:
+
+CREATE TABLE users (
+    userid INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (userid),
+    UNIQUE KEY unique_username (username),
+    UNIQUE KEY unique_email (email)
+) ENGINE=InnoDB;
+
+
+CREATE TABLE user_data (
+    userid INT UNSIGNED NOT NULL,
+    money DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    webdollars INT UNSIGNED NOT NULL DEFAULT 0,
+    level INT UNSIGNED NOT NULL DEFAULT 1,
+    website_count INT UNSIGNED NOT NULL DEFAULT 0,
+    team_count INT UNSIGNED NOT NULL DEFAULT 0,
+    last_tick DATETIME NULL,
+
+    PRIMARY KEY (userid),
+
+    CONSTRAINT fk_user_data_user
+        FOREIGN KEY (userid)
+        REFERENCES users(userid)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+
+CREATE TABLE websites (
+    siteid INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    userid INT UNSIGNED NOT NULL,
+    domain VARCHAR(255) NOT NULL,
+    tld VARCHAR(50) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version INT UNSIGNED NOT NULL DEFAULT 1,
+    visitors_per_hour INT UNSIGNED NOT NULL DEFAULT 0,
+    profit_per_hour DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+
+    PRIMARY KEY (siteid),
+
+    CONSTRAINT fk_websites_user
+        FOREIGN KEY (userid)
+        REFERENCES users(userid)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+
+CREATE TABLE employees (
+    employeeid INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    userid INT UNSIGNED NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    frontend_dev_speed INT NOT NULL DEFAULT 0,
+    backend_dev_speed INT NOT NULL DEFAULT 0,
+    graphics_dev_speed INT NOT NULL DEFAULT 0,
+    hired_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    paid_until DATETIME NULL,
+    assigned_to INT UNSIGNED NULL,
+
+    PRIMARY KEY (employeeid),
+
+    CONSTRAINT fk_employees_user
+        FOREIGN KEY (userid)
+        REFERENCES users(userid)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+
+CREATE TABLE sessions (
+    token VARCHAR(500) NOT NULL,
+    userid INT UNSIGNED NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    expires_at DATETIME NOT NULL,
+
+    PRIMARY KEY (token),
+
+    CONSTRAINT fk_sessions_user
+        FOREIGN KEY (userid)
+        REFERENCES users(userid)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
