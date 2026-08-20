@@ -7,7 +7,7 @@
 
 ---
 
-# 2. Install Node.js
+## 2. Install Node.js
 
 Download the latest version of Node.js:
 
@@ -28,7 +28,7 @@ npm -v
 
 ---
 
-# 3. Install MariaDB
+## 3. Install MariaDB
 
 Download the latest MariaDB Server:
 
@@ -49,7 +49,7 @@ During database instance setup:
 
 ---
 
-# 4. Create the Web Tycoon Database
+## 4. Create the Web Tycoon Database
 
 Open Command Prompt.
 
@@ -94,7 +94,7 @@ EXIT;
 
 ---
 
-# 5. Import the Database
+## 5. Import the Database
 
 The database backup should be located at:
 
@@ -136,7 +136,7 @@ The Web Tycoon tables should now be listed.
 
 ---
 
-# 6. Export the Database — For Developers
+## 6. Export the Database — For Developers
 
 To export the current database:
 
@@ -160,7 +160,7 @@ webtycoon.sql
 
 ---
 
-# 7. Install Server Dependencies
+## 7. Install Server Dependencies
 
 Open Command Prompt and navigate to the server directory:
 
@@ -180,7 +180,7 @@ Wait for npm to finish installing the dependencies.
 
 ---
 
-# 8. Configure Server Environment Variables
+## 8. Configure Server Environment Variables
 
 Inside the `server` directory, create a file named:
 
@@ -202,11 +202,11 @@ JWT_SECRET=YOUR_LONG_RANDOM_SECRET
 
 Make sure `DB_PASSWORD` matches the password used when creating the `webtycoon` MariaDB user.
 
-> Do not upload `.env` to GitHub.
+> **Do not upload `.env` to GitHub.**
 
 ---
 
-# 9. Install Frontend Dependencies
+## 9. Install Frontend Dependencies
 
 Open Command Prompt and navigate to the client directory:
 
@@ -224,9 +224,9 @@ Wait for npm to finish installing the dependencies.
 
 ---
 
-# 10. Run the Game
+## 10. Run the Game
 
-## Start the Server
+### Start the Server
 
 Open Command Prompt and navigate to the server directory:
 
@@ -242,9 +242,7 @@ npm run dev
 
 The server should start on the configured port.
 
----
-
-## Start the Client
+### Start the Client
 
 Open a **second** Command Prompt window.
 
@@ -270,9 +268,9 @@ Open the address in your browser to access Web Tycoon.
 
 ---
 
-# 11. Development Setup
+## 11. Development Setup
 
-When developing Web Tycoon, you should have two terminals running:
+When developing Web Tycoon, you should have two terminals running.
 
 ### Terminal 1 — Server
 
