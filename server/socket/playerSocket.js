@@ -1,4 +1,4 @@
-import { createPlayer } from "../modules/createPlayer.js";
+import { createPlayer } from "../fileRouter.js";
 
 
 export function handlePlayerSocket(socket) {
