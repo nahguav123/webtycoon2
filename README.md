@@ -1,12 +1,10 @@
 # Web Tycoon 2 - Main Branch
 
-Web Tycoon 2 is a browser-based business simulation game where players build and manage their own online businesses. Players can create websites, purchase domains and hosting, manage finances and so on. It was inspired by the original webtycoon that was abandoned by the developers.
+Web Tycoon 2 is a browser-based website hosting simulation game where players build and manage their own online business. Players can create websites, purchase domains and hosting, manage finances and so on. It was inspired by the original webtycoon that was abandoned by the developers.
 
 > **Development Status:** Web Tycoon is currently under active development.
 
 ## Overview
-
-Web Tycoon is designed around the idea of running an online business from the ground up.
 
 Players will be able to:
 
@@ -15,11 +13,8 @@ Players will be able to:
 * Purchase domain names
 * Purchase hosting plans
 * Manage website expenses
-* Generate income from websites
+* Generate income from websites from advertising
 * Track visitors and website performance
-* Manage their virtual money
-* Expand their online business
-* Make decisions that affect the growth and profitability of their business
 
 The game is being developed with a server-authoritative architecture so that important game logic and calculations are handled by the backend rather than being trusted to the client.
 
@@ -30,6 +25,7 @@ The game is being developed with a server-authoritative architecture so that imp
 ### Frontend
 
 * **Vue 3** — User interface
+* **Vue Router** — Changes URL and swaps out pages instantly without full page refreshes.
 * **Pinia** — Client-side state management
 * **Socket.IO Client** — Real-time communication
 * **Chart.js** — Charts and statistics
@@ -81,8 +77,6 @@ The server is responsible for authoritative game operations.
 
 The client requests actions from the server, while the server validates the request, performs the required calculations, updates the database, and returns the resulting data.
 
-This helps prevent players from manipulating important game values through browser developer tools.
-
 ---
 
 ## Project Structure
@@ -99,11 +93,8 @@ The database stores information such as:
 
 * Player accounts
 * Player game data
-* Money
 * Websites
-* Website statistics
-* Hosting information
-* Domain information
+* Sessions
 * Other game-related data
 
 Database access is handled by the server. The client does not directly communicate with MariaDB.
@@ -121,9 +112,9 @@ The project uses:
 * Database-backed player data
 * Server-authoritative game state
 
-Sensitive configuration such as database credentials will eventually be stored in environment variables rather than committed to Git.
+Sensitive configuration such as database credentials will be stored in environment variables that are not committed to Git.
 
-Example:
+Example env variable:
 
 ```env
 DB_HOST=localhost
@@ -136,51 +127,13 @@ DB_NAME=webtycoon
 
 ## Development Setup
 
-### Requirements
-
-Before running Web Tycoon locally, install:
-
-* Node.js
-* npm
-* MariaDB
-* Git
-
 ### Clone the repository
 
 ```bash
 git clone https://github.com/nahguav123/webtycoon2.git
 cd webtycoon2
 ```
-
-### Install dependencies
-
-Install the required npm packages in the relevant project directories.
-
-```bash
-npm install
-```
-
-### Configure environment variables
-
-Create a `.env` file containing your local database and server configuration.
-
-Example:
-
-```env
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your_password
-DB_NAME=webtycoon
-```
-
-### Start the server
-
-```bash
-npm start
-```
-
-The exact commands may change as the project development structure evolves.
+### Follow Install Instructions.txt
 
 ---
 
@@ -272,14 +225,11 @@ The roadmap will change as the game develops.
 * [x] Socket.IO communication
 * [x] MariaDB database
 * [x] Player account creation
-* [x] Password hashing
+* [ ] Password hashing
 * [x] Server-side game logic
-* [x] Basic website system
-* [x] Hosting system
-* [x] Domain system
-
-### Planned
-
+* [ ] Basic website system
+* [ ] Hosting system
+* [ ] Domain system
 * [ ] Complete authentication system
 * [ ] Improved player economy
 * [ ] More website types
@@ -297,24 +247,6 @@ The roadmap will change as the game develops.
 
 ---
 
-## Project Goals
-
-The main goal of Web Tycoon is to create a deep browser-based business simulation while keeping the game architecture secure, scalable, and maintainable.
-
-* JavaScript
-* Vue
-* Node.js
-* SQL
-* MariaDB
-* WebSockets
-* Server architecture
-* Authentication
-* Database design
-* Git
-* Software architecture
-
----
-
 ## License
 
 This project is currently under development.
@@ -328,4 +260,4 @@ License information will be added when the project's distribution and licensing 
 Web Tycoon is developed by **Vaughan Hathaway** and **...**.
 
 The project is actively being redesigned and improved, so parts of the architecture, database structure, and gameplay systems may change significantly during development.
-Note: AI will be used in assisting development but in no way is this project vibe coded. It has been critically thought about, analysed and planned using a human brain. 
+Note: AI will be used in assisting development but this project is not vibe coded. It has been critically thought about, analysed and planned using a human brain. 
