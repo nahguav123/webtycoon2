@@ -11,7 +11,7 @@ export const dbpool = mariadb.createPool({
     port: Number(process.env.DB_PORT) || 3306,
 
     user: process.env.DB_USER || "webtycoon",
-    password: "To4oH#7QiTcAB#", // process.env.DB_PASSWORD ||
+    password: "webpass", // process.env.DB_PASSWORD ||
     database: process.env.DB_NAME || "webtycoon",
 
     connectionLimit: 10,
