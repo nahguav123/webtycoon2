@@ -42,6 +42,7 @@ The game is being developed with a server-authoritative architecture so that imp
 * **MariaDB** — Game database
 * **bcrypt** — Password hashing
 * **JWT** — Authentication
+* **dotenv** - Environment Files for Authentication
 
 ### Development
 
