@@ -1,4 +1,5 @@
 import { createPlayer } from "../fileRouter.js";
+import { createGuest } from "../fileRouter.js";
 
 
 export function handlePlayerSocket(socket) {
@@ -60,16 +61,11 @@ export function handlePlayerSocket(socket) {
                 socket.id
             );
 
+            // Create guest on the server
+            const guest = await createGuest();
 
-            // TODO:
-            // Guest creation will be implemented here.
-            //
-            // For now we can return an error.
-
-            throw new Error(
-                "Guest creation is not implemented yet."
-            );
-
+            // Tell client the guest was created
+            socket.emit("guest:created", guest);
 
         } catch (error) {
 

@@ -22,7 +22,7 @@ export async function getUserData(userid) {
     return rows[0] || null;
 }
 
-// await saveUserData(moneyAmount, webdollarsAmount, level, websiteCount, teamCount, userid); updates the user data for a specific user in the db
+// await saveUserData(moneyAmount, webdollarsAmount, level, websiteCount, teamCount, userid); updates the user data for a specific user in the db - note all values are added to the existing values in the db, not replaced
 export async function saveUserData(moneyAmount, webdollarsAmount, level, websiteCount, teamCount, userid) {
     await dbpool.query(`
         UPDATE user_data

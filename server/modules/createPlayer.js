@@ -2,7 +2,6 @@
 // It validates the input data, checks for existing usernames and emails in the database, 
 // hashes the password, and creates a new user record.
 
-import crypto from "crypto";
 import bcrypt from "bcrypt";
 
 import {

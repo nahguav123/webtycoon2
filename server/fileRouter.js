@@ -2,6 +2,7 @@
 
 export { handlePlayerSocket } from "./socket/playerSocket.js";
 export { createPlayer } from "./modules/createPlayer.js";
+export { createGuest } from "./modules/createGuest.js";
 
 export { dbpool } from "./database/connection.js";
 
