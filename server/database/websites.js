@@ -3,7 +3,7 @@ import { dbpool } from "./connection.js";
 // ========================================
 
 // await getWebsitesList(userid); returns a list of websites owned by specific user from the db
-export async function getWebsitesList(userid) {
+export async function getWebsitesList(userid) { // Implement tokens into this in future
     const rows = await dbpool.query(`
         SELECT
             siteid,

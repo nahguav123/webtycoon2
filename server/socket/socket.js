@@ -1,4 +1,5 @@
 import { handlePlayerSocket } from "./playerSocket.js";
+import { handleWebsiteSocket } from "./websiteSocket.js";
 
 
 export function setupSocket(io) {
@@ -13,6 +14,7 @@ export function setupSocket(io) {
 
         // Player-related events
         handlePlayerSocket(socket);
+        handleWebsiteSocket(socket);
 
 
         // Client disconnected

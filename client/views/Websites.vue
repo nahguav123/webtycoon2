@@ -12,11 +12,11 @@
 
                 <div class="sidebar-profile" v-if="user">
                     <div class="sidebar-profile-img-container">
-                        <img src="stockavatar.jpg" />
+                        <img src="../images/stockavatar.jpg" />
                         <span class="sidebar-profile-level">Lv. {{ level }}</span>
                     </div>
 
-                    <h3 class="sidebar-username-h3">{{ user.username }}</h3>
+                    <h3 class="sidebar-username-h3">{{ playerStore.username }}</h3>
 
                     <div class="sidebar-badges">
                         <span>${{ Math.floor(money).toLocaleString() }}</span>
@@ -25,7 +25,7 @@
                 </div>
 
                 <nav>
-                    <a class="sidebar-menu active" href="websites.html">Websites <span class="sidebar-count">{{ websiteCount }}</span></a>
+                    <RouterLink to="/websites" class="sidebar-menu" active-class="active">Websites <span class="sidebar-count">{{ websiteCount }}</span></RouterLink>
                     <a class="sidebar-menu" href="team.html">Team <span class="sidebar-count">{{ teamCount }}/6</span></a>
                     <a class="sidebar-menu" href="statistics.html">Statistics</a>
                     <a class="sidebar-menu" href="quests.html">Quests</a>
@@ -76,7 +76,7 @@
 
                             <!-- CARD: HEADING -->
                             <div class="website-card-header">
-                                <h3 class="website-card-h3">{{ site.sitename + site.tld }}</h3>
+                                <h3 class="website-card-h3">{{ site.domain + site.tld }}</h3>
                                 <small>Version {{ site.version }}</small>
                             </div>
 
@@ -109,10 +109,10 @@
 
                             <!-- CARD: BARS -->
                             <div class="website-card-bars">
-                                <div class="website-card-bar-red" :style="{ width: designPercentRed + '%' }"></div>
-                                <div class="website-card-bar-blue" :style="{ width: designPercentBlue + '%' }"></div>
-                                <div class="website-card-bar-purple" :style="{ width: designPercentPurple + '%' }"></div>
-                                <div class="website-card-bar-green" :style="{ width: designPercentGreen + '%' }"></div>
+                                <div class="website-card-bar-red" :style="{ width: 25 + '%' }"></div>
+                                <div class="website-card-bar-blue" :style="{ width: 25 + '%' }"></div>
+                                <div class="website-card-bar-purple" :style="{ width: 25 + '%' }"></div>
+                                <div class="website-card-bar-green" :style="{ width: 25 + '%' }"></div>
                             </div>
 
                         </div>
@@ -137,28 +137,53 @@ import { Chart } from "chart.js/auto";
 
 import { usePlayerStore } from "../js/stores/playerStore.js";
 import { useWebsiteStore } from "../js/stores/websiteStore.js"; 
-import { listWebsites } from "../js/socket/websiteSocket.js";
+import { getWebsitesList } from "../js/socket/websiteSocket.js";
 
 const router = useRouter();
+
 const playerStore = usePlayerStore();
+const websiteStore = useWebsiteStore();
 
 const username = ref("");
 
 // Page State
-const sites = ref([]); 
 const filters = ["All", "Notifications"]; 
 const activeFilter = ref("All"); 
 const sortOption = ref("profit"); 
 const charts = {};
 
+const level = ref(1);
+const money = ref(0);
+const webdollars = ref(0);
+const teamCount = ref(0);
+
+// Get websites from Pinia store
+const sites = computed(() => {
+
+    return websiteStore.websites;
+
+});
+
+// Number of websites
+const websiteCount = computed(() => {
+
+    return websiteStore.websites.length;
+
+});
+
 
 async function loadWebsites() {
     if (!playerStore.token) return;
     try {
-        const websitesData = await listWebsites(playerStore.token);
+        const websitesData = await getWebsitesList(playerStore.userid);
 
+        // Store websites in Pinia
+        websiteStore.setWebsites(websitesData.websites || websitesData);
+
+        // Wait for Vue to render the cards
+        await nextTick();
         // Render graphs for each website
-        websitesData.websites.forEach(site => renderGraph(site));
+        websiteStore.websites.forEach(site => renderGraph(site));
 
     } catch (error) {
         console.error("Failed to load websites:", error);
@@ -185,9 +210,11 @@ function createWebsite() {
 
 function logout() { 
     socket.disconnect(); 
+    websiteStore.clearWebsites();
+    websiteStore.clearWebsite();
     playerStore.clearPlayer(); 
     localStorage.removeItem("token"); 
-    router.push("/welcome"); 
+    router.push("/"); 
 }
 
 
@@ -209,5 +236,38 @@ onBeforeUnmount(() => {
     Object.values(charts).forEach(chart => { chart.destroy(); }); 
 });
 
+
+// ========================================
+// REALTIME WEBSITE UPDATES
+// ========================================
+
+function handleWebsiteUpdateBatch(data) {
+
+    if (!data) {
+        return;
+    }
+
+
+    // If the server sends an entire website list
+    if (Array.isArray(data.websites)) {
+
+        websiteStore.setWebsites(
+            data.websites
+        );
+
+    }
+
+
+    // Re-render charts after update
+    //nextTick(() => {
+
+    //    websiteStore.websites.forEach(site => {
+
+    //        renderGraph(site);
+
+    //    });
+
+    //});
+}
 
 </script>

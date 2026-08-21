@@ -10,7 +10,7 @@ import crypto from "crypto";
 
 import { getUserByUsername, createGuestUser } from "../database/users.js";
 
-import { saveUserData } from "../database/userData.js";
+import { createUserData } from "../database/userData.js";
 
 import { GameConfig } from "../game/config.js";
 
