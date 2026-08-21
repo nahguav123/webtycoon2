@@ -3,7 +3,7 @@
 import http from "node:http";
 import { Server } from "socket.io";
 
-import { setupSocket } from "./fileRouter.js";
+import { setupSocket } from "./socket/socket.js";
 
 // Create HTTP server
 const httpServer = http.createServer();

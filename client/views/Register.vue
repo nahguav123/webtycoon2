@@ -68,8 +68,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { usePlayerStore } from "../js/fileRouter.js";
-import { createPlayer as createPlayerSocket } from "../js/fileRouter.js";
+import { usePlayerStore } from "../js/stores/playerStore.js";
+import { createPlayer as createPlayerSocket } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
 

@@ -8,16 +8,11 @@
 
 import crypto from "crypto";
 
-import {
-    getUserByUsername,
-    createGuestUser,
-} from "../database/users.js";
+import { getUserByUsername, createGuestUser } from "../database/users.js";
 
-import {
-    saveUserData
-} from "../database/userData.js";
+import { saveUserData } from "../database/userData.js";
 
-import { GameConfig } from "../fileRouter.js";
+import { GameConfig } from "../game/config.js";
 
 export async function createGuest() {
 

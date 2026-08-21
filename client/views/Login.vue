@@ -17,8 +17,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { usePlayerStore } from "../js/fileRouter.js";
-import { loginPlayer as loginPlayerSocket } from "../js/fileRouter.js";
+import { usePlayerStore } from "../js/stores/playerStore.js";
+import { loginPlayer as loginPlayerSocket } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
 const playerStore = usePlayerStore();

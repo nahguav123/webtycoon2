@@ -1,5 +1,5 @@
 import socket from "./socket.js";
-import { usePlayerStore } from "../fileRouter.js";
+import { usePlayerStore } from "../stores/playerStore.js";
 
 
 export function createGuest() {

@@ -4,13 +4,9 @@
 
 import bcrypt from "bcrypt";
 
-import {
-    getUserByUsername,
-} from "../database/users.js";
+import { getUserByUsername } from "../database/users.js";
 
-import {
-    getUserData
-} from "../database/userData.js";
+import { getUserData } from "../database/userData.js";
 
 
 // ==========================================

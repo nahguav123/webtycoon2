@@ -4,17 +4,11 @@
 
 import bcrypt from "bcrypt";
 
-import {
-    getUserByUsername,
-    getUserByEmail,
-    createUser
-} from "../database/users.js";
+import { getUserByUsername, getUserByEmail, createUser } from "../database/users.js";
 
-import {
-    createUserData
-} from "../database/userData.js";
+import { createUserData } from "../database/userData.js";
 
-import { GameConfig } from "../fileRouter.js";
+import { GameConfig } from "../game/config.js";
 
 // Validate email
 function isValidEmail(email) {

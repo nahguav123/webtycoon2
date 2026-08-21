@@ -43,8 +43,8 @@
 <script setup>
 import { useRouter } from "vue-router";
 
-import { usePlayerStore } from "../js/fileRouter.js";
-import { createGuest } from "../js/fileRouter.js";
+import { usePlayerStore } from "../js/stores/playerStore.js";
+import { createGuest } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
 

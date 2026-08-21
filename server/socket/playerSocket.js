@@ -1,6 +1,6 @@
-import { createPlayer } from "../fileRouter.js";
-import { createGuest } from "../fileRouter.js";
-import { loginPlayer } from "../fileRouter.js";
+import { createPlayer } from "../modules/createPlayer.js";
+import { createGuest } from "../modules/createGuest.js";
+import { loginPlayer } from "../modules/loginPlayer.js";
 
 export function handlePlayerSocket(socket) {
 

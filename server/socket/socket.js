@@ -1,4 +1,4 @@
-import { handlePlayerSocket } from "../fileRouter.js";
+import { handlePlayerSocket } from "./playerSocket.js";
 
 
 export function setupSocket(io) {
