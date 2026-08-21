@@ -91,3 +91,48 @@ export function createPlayer() {
     });
 
 }
+
+export function loginPlayer() {
+
+    return new Promise((resolve, reject) => {
+
+        const playerStore = usePlayerStore();
+
+        // Tell server we want to login a player account
+        socket.emit("player:login", {
+            username: playerStore.username,
+            password: playerStore.password,
+        });
+
+
+        // Server successfully logged in player
+        socket.once("player:loggedIn", (data) => {
+
+            // Store player information in Pinia
+            playerStore.setPlayer({
+                id: data.id,
+                username: data.username,
+                password: data.password,
+                email: data.email,
+                createdAt: data.createdAt
+            });
+
+
+            // Return the data to whoever called loginPlayer()
+            resolve(data);
+
+        });
+
+
+        // Server failed to create player
+        socket.once("player:error", (error) => {
+
+            reject(
+                new Error(error.message || "Failed to login to player account")
+            );
+
+        });
+
+    });
+
+}

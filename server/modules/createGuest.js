@@ -3,6 +3,9 @@
 // A temporary username is generated and the guest receives
 // the standard starting game data.
 
+//Functions:
+//function createGuest()
+
 import crypto from "crypto";
 
 import {
@@ -14,6 +17,7 @@ import {
     saveUserData
 } from "../database/userData.js";
 
+import { GameConfig } from "../fileRouter.js";
 
 export async function createGuest() {
 
@@ -53,22 +57,22 @@ export async function createGuest() {
     // ==========================================
 
     // Starting player values
-    const money = 10000;
-    const webdollars = 50;
+    const money = GameConfig.STARTING_MONEY;
+    const webdollars = GameConfig.STARTING_WEBDOLLARS;
 
-    const level = 1;
+    const level = GameConfig.STARTING_LEVEL;
 
     const websiteCount = 0;
     const teamCount = 0;
 
 
-    await saveUserData(
+    await createUserData(
+        userid,
         money,
         webdollars,
         level,
         websiteCount,
         teamCount,
-        userid
     );
 
 

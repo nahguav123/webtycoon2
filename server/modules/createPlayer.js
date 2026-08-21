@@ -11,9 +11,10 @@ import {
 } from "../database/users.js";
 
 import {
-    saveUserData
+    createUserData
 } from "../database/userData.js";
 
+import { GameConfig } from "../fileRouter.js";
 
 // Validate email
 function isValidEmail(email) {
@@ -143,22 +144,22 @@ export async function createPlayer(data) {
     // ==========================================
 
     // Starting player values
-    const money = 10000;
-    const webdollars = 50;
+    const money = GameConfig.STARTING_MONEY;
+    const webdollars = GameConfig.STARTING_WEBDOLLARS;
 
-    const level = 1;
+    const level = GameConfig.STARTING_LEVEL;
 
     const websiteCount = 0;
     const teamCount = 0;
 
 
-    await saveUserData(
+    await createUserData(
+        userid,
         money,
         webdollars,
         level,
         websiteCount,
-        teamCount,
-        userid
+        teamCount
     );
 
 

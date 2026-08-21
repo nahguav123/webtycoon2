@@ -6,3 +6,4 @@ export { usePlayerStore } from "./stores/playerStore.js";
 
 export { createGuest } from "./socket/playerSocket.js";
 export { createPlayer } from "./socket/playerSocket.js";
+export { loginPlayer } from "./socket/playerSocket.js";

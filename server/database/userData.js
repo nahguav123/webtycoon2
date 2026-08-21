@@ -22,6 +22,31 @@ export async function getUserData(userid) {
     return rows[0] || null;
 }
 
+
+// Create initial game data for a new user
+export async function createUserData(userid, money, webdollars, level, websiteCount, teamCount) {
+    await dbpool.query(`
+        INSERT INTO user_data (
+            userid,
+            money,
+            webdollars,
+            level,
+            website_count,
+            team_count,
+            last_tick
+        )
+        VALUES (?, ?, ?, ?, ?, ?, NOW())
+    `, [
+        userid,
+        money,
+        webdollars,
+        level,
+        websiteCount,
+        teamCount
+    ]);
+}
+
+
 // await saveUserData(moneyAmount, webdollarsAmount, level, websiteCount, teamCount, userid); updates the user data for a specific user in the db - note all values are added to the existing values in the db, not replaced
 export async function saveUserData(moneyAmount, webdollarsAmount, level, websiteCount, teamCount, userid) {
     await dbpool.query(`

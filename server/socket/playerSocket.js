@@ -1,6 +1,6 @@
 import { createPlayer } from "../fileRouter.js";
 import { createGuest } from "../fileRouter.js";
-
+import { loginPlayer } from "../fileRouter.js";
 
 export function handlePlayerSocket(socket) {
 
@@ -86,5 +86,39 @@ export function handlePlayerSocket(socket) {
         }
 
     });
+
+    // ==========================================
+    // LOGIN PLAYER
+    // ==========================================
+
+    socket.on("player:login", async (data) => {
+
+        try {
+
+            console.log(
+                "Login request from:",
+                socket.id
+            );
+
+            // Login player on the server
+            const player = await loginPlayer(data);
+
+            // Tell client the player was logged in
+            socket.emit("player:loggedIn", player);
+
+        } catch (error) {
+
+            console.error(
+                "Player login error:",
+                error
+            );
+
+            socket.emit("login:error", {
+
+                message: error.message || "Failed to login user account."
+            });
+        }
+    });
+
 
 }
