@@ -8,44 +8,18 @@ export function handleWebsiteSocket(socket) {
     // ==========================================
 
 
-    // Load a list of websites
-    socket.on("websites:list:load", async (data) => {
-
+    // Load a list of websites with data for user id
+    socket.on("websites:get", async (data) => {
         try {
-            console.log("Websites list request from:", socket.id);
-
-            // Create websitesList variable from db request
-            const websitesList = await getWebsitesList(data);
-
-            // Tell client the websites list was loaded and pass variable to them
-            socket.emit("websites:list:loaded", websitesList);
+            const websites = await getWebsitesList(data.userid);
+            socket.emit("websites:list", websites);
 
         } catch (error) {
-            console.error("Websites list load error:", error);
-
-            socket.emit("websites:list:error", { message: error.message || "Failed to load websites list." });
+            console.error("Failed to get websites:", error);
+            socket.emit("websites:error", {
+                message: "Failed to retrieve websites"
+            });
         }
     });
-
-
-        // Load data from a single website
-    socket.on("website:data:load", async (data) => {
-
-        try {
-            console.log("Website data request from:", socket.id);
-
-            // Create websitesList variable from db request
-            const websiteData = await getWebsiteData(data);
-
-            // Tell client the websites list was loaded and pass variable to them
-            socket.emit("website:data:loaded", websiteData);
-
-        } catch (error) {
-            console.error("Website data load error:", error);
-
-            socket.emit("website:data:error", { message: error.message || "Failed to load website data." });
-        }
-    });
-
 
 }

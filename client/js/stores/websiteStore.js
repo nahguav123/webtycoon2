@@ -5,65 +5,31 @@ export const useWebsiteStore = defineStore("website", {
 
     state: () => ({
         websites: [],
-
-        siteid: null,
-        userid: null,
-        domain: "",
-        tld: "",
-        createdAt: null,
-        version: null,
-        visitorsPerHour: null,
-        profitPerHour: null
     }),
 
 
     actions: {
-
-        // Store a list of websites with data
-        setWebsites(data) {
-
-            this.websites = data;
-
+        setWebsites(websites) {
+            this.websites = websites;
         },
 
-
-        // Store a single website with data
-        setWebsite(data) {
-
-            this.siteid = data.siteid;
-            this.userid = data.userid;
-            this.domain = data.domain;
-            this.tld = data.tld;
-            this.createdAt = data.createdAt;
-            this.version = data.version;
-            this.visitorsPerHour = data.visitorsPerHour;
-            this.profitPerHour = data.profitPerHour;
-
+        addWebsite(website) {
+            this.websites.push(website);
         },
 
+        updateWebsite(updatedWebsite) {
+            const index = this.websites.findIndex(
+                website => website.siteid === updatedWebsite.siteid
+            );
 
-        // Clear the current website
-        clearWebsite() {
-
-            this.siteid = null;
-            this.userid = null;
-            this.domain = "";
-            this.tld = "";
-            this.createdAt = null;
-            this.version = null;
-            this.visitorsPerHour = null;
-            this.profitPerHour = null;
-
+            if (index !== -1) {
+                this.websites[index] = updatedWebsite;
+            }
         },
 
-
-        // Clear all stored websites
         clearWebsites() {
-
             this.websites = [];
-
-        }
-
+        },
     }
 
 });

@@ -10,23 +10,23 @@
                     <button class="sidebar-logout-button" @click="logout" title="Log Out">⚙️</button>
                 </div>
 
-                <div class="sidebar-profile" v-if="user">
+                <div class="sidebar-profile" v-if="playerStore.isLoggedIn">
                     <div class="sidebar-profile-img-container">
-                        <img src="../images/stockavatar.jpg" />
-                        <span class="sidebar-profile-level">Lv. {{ level }}</span>
+                        <img src="../images/stockavatar.jpg" alt="Profile" />
+                        <span class="sidebar-profile-level">Lv. {{ playerStore.level }}</span>
                     </div>
 
                     <h3 class="sidebar-username-h3">{{ playerStore.username }}</h3>
 
                     <div class="sidebar-badges">
-                        <span>${{ Math.floor(money).toLocaleString() }}</span>
-                        <span>₩{{ webdollars }}</span>
+                        <span>${{ Math.floor(playerStore.money).toLocaleString() }}</span>
+                        <span>₩{{ playerStore.webdollars }}</span>
                     </div>
                 </div>
 
                 <nav>
-                    <RouterLink to="/websites" class="sidebar-menu" active-class="active">Websites <span class="sidebar-count">{{ websiteCount }}</span></RouterLink>
-                    <a class="sidebar-menu" href="team.html">Team <span class="sidebar-count">{{ teamCount }}/6</span></a>
+                    <RouterLink to="/websites" class="sidebar-menu" active-class="active">Websites <span class="sidebar-count">{{ playerStore.websiteCount }}</span></RouterLink>
+                    <a class="sidebar-menu" href="team.html">Team <span class="sidebar-count">{{ playerStore.teamCount }}/6</span></a>
                     <a class="sidebar-menu" href="statistics.html">Statistics</a>
                     <a class="sidebar-menu" href="quests.html">Quests</a>
                     <a class="sidebar-menu" href="ratings.html">Ratings</a>
@@ -72,17 +72,17 @@
 
                     <!-- SINGLE CARD -->
                     <div class="websites-cards">
-                        <div class="website-card" v-for="site in sites" :key="site.siteid" @click="openWebsite(site.siteid)">
+                        <div class="website-card" v-for="website in websiteStore.websites" :key="website.siteid" @click="openWebsite(website.siteid)">
 
                             <!-- CARD: HEADING -->
                             <div class="website-card-header">
-                                <h3 class="website-card-h3">{{ site.domain + site.tld }}</h3>
-                                <small>Version {{ site.version }}</small>
+                                <h3 class="website-card-h3">{{ website.domain + website.tld }}</h3>
+                                <small>Version {{ website.version }}</small>
                             </div>
 
                             <!-- CARD: GRAPH -->
                             <div class="website-card-graph-container">
-                                <canvas :id="'graph-' + site.siteid" class="website-card-graph"></canvas>
+                                <canvas :id="`graph-${website.siteid}`" class="website-card-graph"></canvas>
                             </div>
 
                             <!-- CARD: FOOTER / STATS -->
@@ -91,12 +91,12 @@
                                 <!-- Visitors + Profit Row -->
                                 <div class="stats-top">
                                     <span class="stat-main">
-                                        {{ site.visitorsPerHour }}
+                                        {{ website.visitorsPerHour }}
                                         <span class="stat-circle stat-blue"></span>
                                     </span>
                                     <span class="stat-main">
                                         <span class="stat-circle stat-yellow"></span>
-                                        ${{ site.profitPerHour }}
+                                        ${{ website.profitPerHour }}
                                     </span>
                                 </div>
 
@@ -117,7 +117,7 @@
 
                         </div>
 
-                        <p v-if="!sites.length" class="websites-empty-note">
+                        <p v-if="websiteStore.websites.length === 0" class="websites-empty-note">
                             No websites yet — <a href="createwebsite.html">create your first one</a>.
                         </p>
                     </div>
@@ -131,143 +131,39 @@
 
 
 <script setup>
-import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { Chart } from "chart.js/auto";
 
 import { usePlayerStore } from "../js/stores/playerStore.js";
 import { useWebsiteStore } from "../js/stores/websiteStore.js"; 
-import { getWebsitesList } from "../js/socket/websiteSocket.js";
+
+import { requestWebsites } from "../js/socket/websiteSocket";
 
 const router = useRouter();
 
 const playerStore = usePlayerStore();
 const websiteStore = useWebsiteStore();
 
-const username = ref("");
 
 // Page State
 const filters = ["All", "Notifications"]; 
 const activeFilter = ref("All"); 
 const sortOption = ref("profit"); 
-const charts = {};
 
-const level = ref(1);
-const money = ref(0);
-const webdollars = ref(0);
-const teamCount = ref(0);
-
-// Get websites from Pinia store
-const sites = computed(() => {
-
-    return websiteStore.websites;
-
-});
-
-// Number of websites
-const websiteCount = computed(() => {
-
-    return websiteStore.websites.length;
-
-});
-
-
-async function loadWebsites() {
-    if (!playerStore.token) return;
-    try {
-        const websitesData = await getWebsitesList(playerStore.userid);
-
-        // Store websites in Pinia
-        websiteStore.setWebsites(websitesData.websites || websitesData);
-
-        // Wait for Vue to render the cards
-        await nextTick();
-        // Render graphs for each website
-        websiteStore.websites.forEach(site => renderGraph(site));
-
-    } catch (error) {
-        console.error("Failed to load websites:", error);
-    }
+function logout() {
+    playerStore.logout();
+    router.push("/");
 }
-
-//Need something for realtime website updates - socket.io all sites
-// Also need something for sorting/filter websites
-//Also look into nexttick for relevant stuff.
-
-
-// Page Actions
-function setFilter(filter) { 
-    activeFilter.value = filter; 
-} 
-
-function openWebsite(siteid) { 
-    router.push(`/website/${siteid}`); 
-} 
-
-function createWebsite() { 
-    router.push("/create-website"); 
-} 
-
-function logout() { 
-    socket.disconnect(); 
-    websiteStore.clearWebsites();
-    websiteStore.clearWebsite();
-    playerStore.clearPlayer(); 
-    localStorage.removeItem("token"); 
-    router.push("/"); 
-}
-
 
 // Lifecycle
-onMounted(async () => { 
-    // Make sure player is logged in 
-    if (!playerStore.isLoggedIn) { 
-        router.push("/welcome"); 
-        return; 
-    } 
-    
-    await loadWebsites(); 
-    
-    socket.on( "websiteUpdateBatch", handleWebsiteUpdateBatch );
-}); 
+onMounted(async () => {
+    requestWebsites(playerStore.userid);
 
-onBeforeUnmount(() => { 
-    socket.off( "websiteUpdateBatch", handleWebsiteUpdateBatch ); 
-    Object.values(charts).forEach(chart => { chart.destroy(); }); 
+    //if (!playerStore.isLoggedIn) {
+    //    router.push("/");
+    //    return;
+    //}
+
 });
-
-
-// ========================================
-// REALTIME WEBSITE UPDATES
-// ========================================
-
-function handleWebsiteUpdateBatch(data) {
-
-    if (!data) {
-        return;
-    }
-
-
-    // If the server sends an entire website list
-    if (Array.isArray(data.websites)) {
-
-        websiteStore.setWebsites(
-            data.websites
-        );
-
-    }
-
-
-    // Re-render charts after update
-    //nextTick(() => {
-
-    //    websiteStore.websites.forEach(site => {
-
-    //        renderGraph(site);
-
-    //    });
-
-    //});
-}
 
 </script>

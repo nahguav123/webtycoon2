@@ -18,7 +18,7 @@ export async function getWebsitesList(userid) { // Implement tokens into this in
         WHERE userid = ?
     `, [userid]);
 
-    return rows || null;
+    return rows;
 }
 
 // await getWebsiteData(userid, siteid); returns data from a single website owned by specific user from the db

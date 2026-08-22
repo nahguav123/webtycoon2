@@ -18,11 +18,15 @@ export function createGuest() {
 
             // Store player information in Pinia
             playerStore.setPlayer({
-                id: data.id,
+                userid: data.userid,
                 username: data.username,
-                password: data.password,
                 email: data.email,
-                createdAt: data.createdAt
+
+                money: data.money,
+                webdollars: data.webdollars,
+                level: data.level,
+                websiteCount: data.websiteCount,
+                teamCount: data.teamCount
             });
 
 
@@ -65,11 +69,15 @@ export function createPlayer() {
 
             // Store player information in Pinia
             playerStore.setPlayer({
-                id: data.id,
+                userid: data.userid,
                 username: data.username,
-                password: data.password,
                 email: data.email,
-                createdAt: data.createdAt
+
+                money: data.money,
+                webdollars: data.webdollars,
+                level: data.level,
+                websiteCount: data.websiteCount,
+                teamCount: data.teamCount
             });
 
 
@@ -110,11 +118,15 @@ export function loginPlayer() {
 
             // Store player information in Pinia
             playerStore.setPlayer({
-                id: data.id,
+                userid: data.userid,
                 username: data.username,
-                password: data.password,
                 email: data.email,
-                createdAt: data.createdAt
+                
+                money: data.money,
+                webdollars: data.webdollars,
+                level: data.level,
+                websiteCount: data.websiteCount,
+                teamCount: data.teamCount
             });
 
 
@@ -124,8 +136,8 @@ export function loginPlayer() {
         });
 
 
-        // Server failed to create player
-        socket.once("player:error", (error) => {
+        // Server failed to login player
+        socket.once("login:error", (error) => {
 
             reject(
                 new Error(error.message || "Failed to login to player account")
