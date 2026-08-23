@@ -15,10 +15,16 @@ socket.on("website:update", (website) => {
     websiteStore.updateWebsite(website);
 });
 
+socket.on("websites:error", (error) => {
+    console.error("Website error:", error.message);
+});
 
 // Ask the server for this player's websites
-export function requestWebsites(userid) {
-    socket.emit("websites:get", {
-        userid
-    });
+export function requestWebsites() {
+    socket.emit("websites:get");
+}
+
+//Request single website
+export function requestWebsite(siteid) {
+    socket.emit("website:get", {siteid});
 }

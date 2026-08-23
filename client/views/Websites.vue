@@ -138,6 +138,7 @@ import { usePlayerStore } from "../js/stores/playerStore.js";
 import { useWebsiteStore } from "../js/stores/websiteStore.js"; 
 
 import { requestWebsites } from "../js/socket/websiteSocket";
+import { logoutPlayer } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
 
@@ -151,13 +152,13 @@ const activeFilter = ref("All");
 const sortOption = ref("profit"); 
 
 function logout() {
-    playerStore.logout();
+    logoutPlayer();
     router.push("/");
 }
 
 // Lifecycle
 onMounted(async () => {
-    requestWebsites(playerStore.userid);
+    requestWebsites();
 
     //if (!playerStore.isLoggedIn) {
     //    router.push("/");

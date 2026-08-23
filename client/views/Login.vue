@@ -17,11 +17,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { usePlayerStore } from "../js/stores/playerStore.js";
 import { loginPlayer as loginPlayerSocket } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
-const playerStore = usePlayerStore();
 
 const username = ref("");
 const password = ref("");
@@ -57,20 +55,20 @@ async function submitLogin() {
 
         isLoggingIn.value = true;
 
-        // Put registration information into Pinia
-        playerStore.setPlayer({
-            username: username.value.trim(),
-            password: password.value
-        });
-
         // loginPlayerSocket() gets the data from Pinia
-        const player = await loginPlayerSocket();
+        const player = await loginPlayerSocket(
+            username.value.trim(),
+            password.value
+        );
 
         console.log("Successfully logged in player account:", player);
 
         // Player login authorised by the server
         message.value = "Player logged in successfully!";
         messageColor.value = "green";
+
+        // Clear password from memory
+        password.value = "";
 
         // Navigate using Vue Router
         setTimeout(() => {router.push("/websites");}, 800);

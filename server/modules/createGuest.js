@@ -14,6 +14,8 @@ import { createUserData } from "../database/userData.js";
 
 import { GameConfig } from "../game/config.js";
 
+import { generateToken } from "../auth/auth.js";
+
 export async function createGuest() {
 
     // ==========================================
@@ -70,19 +72,26 @@ export async function createGuest() {
         teamCount,
     );
 
+    // Generate JWT Token
+    const token = generateToken(userid);
 
     // ==========================================
     // RETURN DATA TO PLAYER
     // ==========================================
 
     return {
-        userid,
-        username,
-        money,
-        webdollars,
-        level,
-        websiteCount,
-        teamCount
-    };
+        token,
 
+        player: {
+            userid,
+            username,
+            email: null,
+
+            money,
+            webdollars,
+            level,
+            websiteCount,
+            teamCount
+        }
+    };
 }

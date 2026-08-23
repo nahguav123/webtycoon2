@@ -68,12 +68,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { usePlayerStore } from "../js/stores/playerStore.js";
 import { createPlayer as createPlayerSocket } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
-
-const playerStore = usePlayerStore();
 
 const username = ref("");
 const email = ref("");
@@ -126,15 +123,12 @@ async function submitRegister() {
 
     isRegistering.value = true;
 
-    // Put registration information into Pinia
-    playerStore.setPlayer({
-      username: username.value.trim(),
-      email: email.value.trim(),
-      password: password.value
-    });
-
     // createPlayerSocket() gets the data from Pinia
-    const player = await createPlayerSocket();
+    const player = await createPlayerSocket(
+      username.value.trim(),
+      email.value.trim(),
+      password.value
+    );
 
     console.log(
       "Successfully created player account:",
@@ -144,6 +138,11 @@ async function submitRegister() {
     // Player has been created by the server
     message.value = "Player created successfully!";
     messageColor.value = "green";
+
+    // Clear password fields
+
+    password.value = "";
+    confirmPassword.value = "";
 
     // Navigate using Vue Router
     setTimeout(() => {

@@ -2,8 +2,27 @@ import { createPlayer } from "../modules/createPlayer.js";
 import { createGuest } from "../modules/createGuest.js";
 import { loginPlayer } from "../modules/loginPlayer.js";
 
-export function handlePlayerSocket(socket) {
+import { getUserById } from "../database/users.js";
+import { getUserData } from "../database/userData.js";
 
+
+function requireAuthentication(socket) {
+
+    if (!socket.user?.userid) {
+
+        throw new Error(
+            "Authentication required."
+        );
+
+    }
+
+    return Number(
+        socket.user.userid
+    );
+}
+
+
+export function handlePlayerSocket(socket) {
 
     // ==========================================
     // CREATE PLAYER
@@ -62,10 +81,15 @@ export function handlePlayerSocket(socket) {
             );
 
             // Create guest on the server
-            const guest = await createGuest();
+            const result = await createGuest();
+
+            // Mark this socket as authenticated
+            socket.user = {
+                userid: Number(result.player.userid)
+            };
 
             // Tell client the guest was created
-            socket.emit("guest:created", guest);
+            socket.emit("guest:created",result);
 
         } catch (error) {
 
@@ -101,10 +125,15 @@ export function handlePlayerSocket(socket) {
             );
 
             // Login player on the server
-            const player = await loginPlayer(data);
+            const result = await loginPlayer(data);
+
+            // Mark this socket as authenticated
+            socket.user = {
+                userid: Number(result.player.userid)
+            };
 
             // Tell client the player was logged in
-            socket.emit("player:loggedIn", player);
+            socket.emit("player:loggedIn", result);
 
         } catch (error) {
 
@@ -121,4 +150,47 @@ export function handlePlayerSocket(socket) {
     });
 
 
+    socket.on("player:restore", async () => {
+
+        try {
+
+            const userid = requireAuthentication(socket);
+
+            const user = await getUserById(userid);
+
+            if (!user) {
+                throw new Error("Player account no longer exists.");
+            }
+
+            const userData = await getUserData(userid);
+
+            if (!userData) {
+                throw new Error("Player game data not found.");
+            }
+
+            const player = {
+                userid,
+
+                username: user.username,
+                email: user.email,
+                createdAt: user.createdAt,
+
+                money: userData.money,
+                webdollars: userData.webdollars,
+                level: userData.level,
+                websiteCount: userData.websiteCount,
+                teamCount: userData.teamCount
+            };
+
+            socket.emit("player:restored", player);
+
+        } catch (error) {
+            console.error("Session restore error:", error);
+
+            socket.emit("player:restore:error", {
+                message: error.message || "Failed to restore session."
+            });
+
+        }
+    });
 }

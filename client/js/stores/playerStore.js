@@ -6,7 +6,6 @@ export const usePlayerStore = defineStore("player", {
     state: () => ({
         userid: null,
         username: "",
-        password: "",
         email: "",
         createdAt: null,
 
@@ -15,6 +14,9 @@ export const usePlayerStore = defineStore("player", {
         webdollars: 0,
         websiteCount: 0,
         teamCount: 0,
+
+        isLoading: false,
+        sessionRestored: false
     }),
 
     getters: {
@@ -29,7 +31,6 @@ export const usePlayerStore = defineStore("player", {
 
             this.userid = data.userid;
             this.username = data.username;
-            this.password = data.password;
             this.email = data.email;
             this.createdAt = data.createdAt;
             
@@ -45,6 +46,12 @@ export const usePlayerStore = defineStore("player", {
         logout() {
             this.$reset();
             localStorage.removeItem("token");
+            socket.disconnect();
+        },
+        clearPlayer() {
+            this.$reset();
+            localStorage.removeItem("token");
+            socket.disconnect();
         }
 
     }

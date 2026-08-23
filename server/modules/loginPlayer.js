@@ -8,6 +8,8 @@ import { getUserByUsername } from "../database/users.js";
 
 import { getUserData } from "../database/userData.js";
 
+import { generateToken } from "../auth/auth.js";
+
 
 // ==========================================
 // LOGIN PLAYER
@@ -82,19 +84,25 @@ export async function loginPlayer(data) {
         throw new Error("Player game data not found.");
     }
 
+    // Generate JWT
+    const token = generateToken(userid);
 
     // =========
     // Return data to player frontend
     return {
+        token,
 
-    userid,
-    username,
-    email,
-    money: userData.money,
-    webdollars: userData.webdollars,
-    level: userData.level,
-    websiteCount: userData.websiteCount,
-    teamCount: userData.teamCount
+        player: {
+            userid,
+            username,
+            email,
+
+            createdAt: existingUsername.createdAt,
+            money: userData.money,
+            webdollars: userData.webdollars,
+            level: userData.level,
+            websiteCount: userData.websiteCount,
+            teamCount: userData.teamCount
+        }
     };
-
 }

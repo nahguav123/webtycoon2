@@ -164,6 +164,7 @@ export async function createPlayer(data) {
     userid,
     username,
     email,
+    
     money,
     webdollars,
     level,

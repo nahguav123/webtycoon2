@@ -1,4 +1,5 @@
 // Modules from node.js server e.g http is built in
+import "dotenv/config";
 
 import http from "node:http";
 import { Server } from "socket.io";
