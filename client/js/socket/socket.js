@@ -3,7 +3,9 @@ import { io } from "socket.io-client";
 import { getToken, removeToken } from "../auth/auth.js";
 
 
-const socket = io("http://localhost:3000", {
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
+const socket = io(SERVER_URL, {
     autoConnect: false,
     auth: {
         token: getToken()
