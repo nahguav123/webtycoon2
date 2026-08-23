@@ -124,8 +124,8 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `userid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `password_hash` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`userid`),
   UNIQUE KEY `unique_username` (`username`),
