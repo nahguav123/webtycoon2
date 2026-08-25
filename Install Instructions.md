@@ -134,6 +134,8 @@ EXIT;
 
 The Web Tycoon tables should now be listed.
 
+> **Already have a database from an earlier version?** Skip the import and run the scripts in `server/database/migrations/` in order instead. They only contain the schema changes since the last dump.
+
 ---
 
 ## 6. Export the Database — For Developers
@@ -170,10 +172,10 @@ cd "C:\...\WebTycoon\server"
 
 `package.json` is already included, so **do not run `npm init -y`**.
 
-Install the required packages:
+Install the required packages (they are listed in `package.json`):
 
 ```cmd
-npm install socket.io mariadb dotenv bcrypt jsonwebtoken
+npm install
 ```
 
 Wait for npm to finish installing the dependencies.
@@ -198,7 +200,10 @@ DB_PASSWORD=webpass
 DB_NAME=webtycoon
 
 JWT_SECRET=YOUR_LONG_RANDOM_SECRET
+PORT=3000
 ```
+
+`PORT` is optional and defaults to 3000. If you change it, also create `client/.env` with `VITE_SERVER_URL=http://localhost:<port>` so the client knows where the server is.
 
 Make sure `DB_PASSWORD` matches the password used when creating the `webtycoon` MariaDB user.
 
@@ -214,10 +219,10 @@ Open Command Prompt and navigate to the client directory:
 cd "C:\...\WebTycoon\client"
 ```
 
-Install the required packages:
+Install the required packages (they are listed in `package.json`):
 
 ```cmd
-npm install vue pinia socket.io-client chart.js vue-router vite
+npm install
 ```
 
 Wait for npm to finish installing the dependencies.
@@ -291,3 +296,32 @@ Then open:
 ```text
 http://localhost:5173
 ```
+
+---
+
+## 12. macOS / Linux
+
+Same steps, different commands. Node.js installs the same way (or via `nvm`).
+
+Install and start MariaDB with Homebrew:
+
+```bash
+brew install mariadb
+brew services start mariadb
+```
+
+On Linux use your package manager (`sudo apt install mariadb-server` on Debian/Ubuntu) and `sudo systemctl start mariadb`.
+
+Homebrew creates a passwordless admin account under your own username, so log in with that instead of root:
+
+```bash
+mariadb -u "$USER"
+```
+
+Then run the same `CREATE DATABASE` / `CREATE USER` / `GRANT` statements from step 4, and import with:
+
+```bash
+mariadb -u webtycoon -p webtycoon < server/database/webtycoon/webtycoon.sql
+```
+
+Everything from step 7 onward is identical, just use Terminal instead of Command Prompt.

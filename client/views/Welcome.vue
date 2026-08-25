@@ -32,6 +32,8 @@
         </button>
       </div>
 
+      <p v-if="errorMessage" class="welcome-error">{{ errorMessage }}</p>
+
       <div class="welcome-footer-note">
         Inspired by the original webtycoon game.
       </div>
@@ -41,14 +43,19 @@
 
 
 <script setup>
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 import { createGuest } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
 
+const errorMessage = ref("");
+
 
 async function playAsGuest() {
+  errorMessage.value = "";
+
   try {
     const player = await createGuest();
 
@@ -62,6 +69,7 @@ async function playAsGuest() {
 
   } catch (error) {
     console.error("Guest creation failed:", error);
+    errorMessage.value = error.message || "Could not start a guest game.";
   }
 }
 

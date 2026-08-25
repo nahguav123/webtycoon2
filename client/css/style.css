@@ -103,6 +103,11 @@
   margin-top: 22px;
   color: #666666;
 }
+.welcome-error {
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: #d9534f;
+}
 
 
 /********************************************/

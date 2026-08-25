@@ -42,16 +42,11 @@ export const usePlayerStore = defineStore("player", {
         },
 
 
-        //In future for removing player from local store.
-        logout() {
-            this.$reset();
-            localStorage.removeItem("token");
-            socket.disconnect();
-        },
+        // Only resets the store. Token removal and socket disconnect are
+        // handled by logoutPlayer() in socket/playerSocket.js so the store
+        // never has to know about the socket.
         clearPlayer() {
             this.$reset();
-            localStorage.removeItem("token");
-            socket.disconnect();
         }
 
     }
