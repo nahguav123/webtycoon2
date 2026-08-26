@@ -14,5 +14,8 @@
     "jsonwebtoken": "^9.0.3",
     "mariadb": "^3.5.3",
     "socket.io": "^4.8.3"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true
   }
 }
