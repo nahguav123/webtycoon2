@@ -1,35 +1,35 @@
-// This module handles the creation of a new player account in the game. 
-// It validates the input data, checks for existing usernames and emails in the database, 
-// hashes the password, and creates a new user record.
+/*
+PURPOSE: Creates a registered player.
+
+INPUT: Username, email and password.
+OUTPUT: New player data.
+FUNCTIONS: isValidEmail(), createPlayer().
+DATA: User account + starting game data.
+*/
+
 
 import bcrypt from "bcrypt";
 
 import { getUserByUsername, getUserByEmail, createUser } from "../database/users.js";
-
 import { createUserData } from "../database/userData.js";
-
 import { GameConfig } from "../game/config.js";
+
 
 // Validate email
 function isValidEmail(email) {
-
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
 }
 
 
-// ==========================================
-// CREATE PLAYER
-// ==========================================
 export async function createPlayer(data) {
-    // VALIDATE INPUT
+    // Checks input data
     if (!data) {
         throw new Error(
             "No player data provided."
         );
     }
 
-    // Get all inputs
+    // Get all inputs and cleans them
     const username =
         typeof data.username === "string"
             ? data.username.trim()
@@ -45,108 +45,86 @@ export async function createPlayer(data) {
             ? data.password
             : "";
 
-    // ==========================================
-    // VALIDATION
-    // ==========================================
-    // Username
+    // Validates username
     if (!username) {
         throw new Error(
             "Username is required."
         );
     }
-
     if (username.length < 3) {
         throw new Error(
             "Username must be at least 3 characters."
         );
     }
-
     if (username.length > 20) {
         throw new Error(
             "Username must be 20 characters or less."
         );
     }
-
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
         throw new Error(
             "Username can only contain letters, numbers and underscores."
         );
     }
 
-    // Email
+    // Validates email
     if (!email) {
         throw new Error(
             "Email is required."
         );
     }
-
     if (!isValidEmail(email)) {
         throw new Error(
             "Invalid email address."
         );
     }
 
-    // Password
+    // Validates password
     if (!password) {
         throw new Error(
             "Password is required."
         );
     }
-
     if (password.length < 8) {
         throw new Error(
             "Password must be at least 8 characters."
         );
     }
 
-    // ==========================================
-    // DATABASE CHECKS
-    // ==========================================
-    //Username
+    // Checks username against database for duplicates
     const existingUsername = await getUserByUsername(username);
-
     if (existingUsername) {
         throw new Error(
             "Username is already taken."
         );
     }
 
-    //Email
+    // Checks email against database for duplicates
     const existingEmail = await getUserByEmail(email);
-
     if (existingEmail) {
         throw new Error(
             "Email is already registered."
         );
     }
 
-    // ==============
-    // Hash Password
+    // Hashes the password
     const passwordHash = await bcrypt.hash(password, 12);
 
-   // ===========
-   // Create User
+   // Creates user and stores userid
     const userid = Number(await createUser(
         username,
         email,
         passwordHash
     ));
 
-
-    // ==========================================
-    // CREATE GAME DATA
-    // ==========================================
-
-    // Starting player values
+    // Sets starting game data
     const money = GameConfig.STARTING_MONEY;
     const webdollars = GameConfig.STARTING_WEBDOLLARS;
-
     const level = GameConfig.STARTING_LEVEL;
-
     const websiteCount = 0;
     const teamCount = 0;
 
-
+    // Stores starting game data in db
     await createUserData(
         userid,
         money,
@@ -156,9 +134,7 @@ export async function createPlayer(data) {
         teamCount
     );
 
-
-    // =========
-    // Return data to player frontend
+    // Returns data to whoever called createPlayer()
     return {
 
     userid,
@@ -171,5 +147,4 @@ export async function createPlayer(data) {
     websiteCount,
     teamCount
     };
-
 }

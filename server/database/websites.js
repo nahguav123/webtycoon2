@@ -1,13 +1,21 @@
+/*
+PURPOSE: Reads player websites.
+
+INPUT: User ID and site ID.
+OUTPUT: Website list or single website.
+FUNCTIONS: getWebsitesList(), getWebsiteData().
+DATA: websites table.
+*/
+
+
 import { dbpool } from "./connection.js";
 
-// ========================================
 
-// await getWebsitesList(userid); returns a list of websites owned by specific user from the db
+// Returns a list of websites owned by specified userid
 export async function getWebsitesList(userid) { // Implement tokens into this in future
     const rows = await dbpool.query(`
         SELECT
             siteid,
-            userid,
             domain,
             tld,
             created_at AS createdAt,
@@ -21,12 +29,10 @@ export async function getWebsitesList(userid) { // Implement tokens into this in
     return rows;
 }
 
-// await getWebsiteData(userid, siteid); returns data from a single website owned by specific user from the db
+// Returns data from a single website owned by specified userid
 export async function getWebsiteData(userid, siteid) {
     const rows = await dbpool.query(`
         SELECT
-            siteid,
-            userid,
             domain,
             tld,
             created_at AS createdAt,

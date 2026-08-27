@@ -1,3 +1,13 @@
+<!--
+PURPOSE: Main landing page.
+
+INPUT: User button actions.
+OUTPUT: Guest account, login or registration navigation.
+FUNCTIONS: playAsGuest(), goToLogin(), goToRegister().
+DATA: errorMessage.
+-->
+
+
 <template>
   <div class="welcome-app">
     <div class="welcome-container">

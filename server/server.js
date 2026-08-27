@@ -1,3 +1,13 @@
+/*
+PURPOSE: Starts the Web Tycoon server.
+
+INPUT: Environment configuration and socket connections.
+OUTPUT: HTTP + Socket.IO server.
+FUNCTIONS: Server startup.
+DATA: HTTP server, Socket.IO server, PORT.
+*/
+
+
 // Modules from node.js server e.g http is built in
 import "dotenv/config";
 
@@ -13,6 +23,7 @@ const httpServer = http.createServer();
 const io = new Server(httpServer, {
 
     cors: {
+        // Origin needs to be changed in production
         origin: "*",
         methods: ["GET", "POST"]
     }

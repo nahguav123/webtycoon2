@@ -133,7 +133,7 @@ DB_NAME=webtycoon
 git clone https://github.com/nahguav123/webtycoon2.git
 cd webtycoon2
 ```
-### Follow Install Instructions.txt
+### Follow Install Instructions.md
 
 ---
 
@@ -225,7 +225,7 @@ The roadmap will change as the game develops.
 * [x] Socket.IO communication
 * [x] MariaDB database
 * [x] Player account creation
-* [ ] Password hashing
+* [x] Password hashing
 * [x] Server-side game logic
 * [ ] Basic website system
 * [ ] Hosting system

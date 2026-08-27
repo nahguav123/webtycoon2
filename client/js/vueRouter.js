@@ -1,3 +1,13 @@
+/*
+PURPOSE: Controls client-side page navigation.
+
+INPUT: Requested route and login state.
+OUTPUT: Displays/redirects to the correct page.
+FUNCTIONS: Navigation guard.
+DATA: Application routes.
+*/
+
+
 import { createRouter, createWebHistory } from "vue-router";
 
 import Welcome from "../views/Welcome.vue";
@@ -35,7 +45,7 @@ const router = createRouter({
 });
 
 
-// ROUTER AUTH GUARD
+// Router authentication guard
 router.beforeEach(
     (to) => {
 

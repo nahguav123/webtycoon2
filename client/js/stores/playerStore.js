@@ -1,3 +1,13 @@
+/*
+PURPOSE: Stores the current player's data.
+
+INPUT: Player data from server.
+OUTPUT: Reactive player data for Vue.
+FUNCTIONS: setPlayer(), clearPlayer().
+DATA: userid, username, email, money, webdollars, level, counts.
+*/
+
+
 import { defineStore } from "pinia";
 
 
@@ -15,11 +25,13 @@ export const usePlayerStore = defineStore("player", {
         websiteCount: 0,
         teamCount: 0,
 
+        // Dont think these are used anymore, remove maybe?
         isLoading: false,
         sessionRestored: false
     }),
 
     getters: {
+        // Used in vueRouter.js to check if user logged in
         isLoggedIn: (state) => {
             return !!state.userid;
         }
@@ -43,8 +55,7 @@ export const usePlayerStore = defineStore("player", {
 
 
         // Only resets the store. Token removal and socket disconnect are
-        // handled by logoutPlayer() in socket/playerSocket.js so the store
-        // never has to know about the socket.
+        // handled by logoutPlayer() in socket/playerSocket.js
         clearPlayer() {
             this.$reset();
         }

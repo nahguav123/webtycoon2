@@ -1,3 +1,13 @@
+<!--
+PURPOSE: Main authenticated game/website page.
+
+INPUT: Player and website stores; user actions.
+OUTPUT: Displays player and website information.
+FUNCTIONS: logout(), onMounted().
+DATA: Filters, sorting, playerStore, websiteStore.
+-->
+
+
 <template>
     <div id="websites-app" class="websites-app">
 
@@ -159,11 +169,6 @@ function logout() {
 // Lifecycle
 onMounted(async () => {
     requestWebsites();
-
-    //if (!playerStore.isLoggedIn) {
-    //    router.push("/");
-    //    return;
-    //}
 
 });
 

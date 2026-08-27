@@ -1,11 +1,18 @@
+/*
+PURPOSE: Connects the server to MariaDB.
+
+INPUT: Database environment variables.
+OUTPUT: Shared database connection pool.
+FUNCTIONS: testDatabaseConnection(), getDbConnection(), closeDatabase().
+DATA: dbpool.
+*/
+
+
 import "dotenv/config";
 import mariadb from "mariadb";
 
 
-// ==========================================
-// DATABASE CONNECTION
-// ==========================================
-
+// Database connection - dbpool
 export const dbpool = mariadb.createPool({
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -20,42 +27,29 @@ export const dbpool = mariadb.createPool({
 });
 
 
-// ==========================================
-// TEST DATABASE CONNECTION
-// ==========================================
-
+// Function for testing database connection
 export async function testDatabaseConnection() {
-
     let connection;
 
     try {
-
         connection = await dbpool.getConnection();
-
         console.log("MariaDB connected successfully.");
 
     } catch (error) {
-
         console.error("MariaDB connection failed:");
         console.error(error);
 
         throw error;
 
     } finally {
-
         if (connection) {
             connection.release();
         }
-
     }
-
 }
 
 
-// ==========================================
-// GET DATABASE CONNECTION - Manual way of .query
-// ==========================================
-
+// Get database connection - manual way of .query, requires closing
 export async function getDbConnection() {
 
     return await dbpool.getConnection();
@@ -63,10 +57,7 @@ export async function getDbConnection() {
 }
 
 
-// ==========================================
-// CLOSE DATABASE
-// ==========================================
-
+// Close database connection
 export async function closeDatabase() {
 
     await dbpool.end();

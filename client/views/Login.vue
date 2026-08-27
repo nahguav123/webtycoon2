@@ -1,3 +1,13 @@
+<!--
+PURPOSE: Player login page.
+
+INPUT: Username and password.
+OUTPUT: Login request and navigation to Websites.
+FUNCTIONS: submitLogin().
+DATA: Form fields and login status/message.
+-->
+
+
 <template>
     <div id="login-app" class="login-app">
         <form class="login-form" @submit.prevent="submitLogin">

@@ -1,3 +1,13 @@
+<!--
+PURPOSE: Player registration page.
+
+INPUT: Username, email and passwords.
+OUTPUT: New account request and navigation to Login.
+FUNCTIONS: submitRegister().
+DATA: Form fields and registration status/message.
+-->
+
+
 <template>
   <div class="register-app">
     <form

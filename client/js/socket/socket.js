@@ -1,5 +1,14 @@
-import { io } from "socket.io-client";
+/*
+PURPOSE: Manages the Socket.IO connection.
 
+INPUT: Server URL and JWT.
+OUTPUT: Connected authenticated socket.
+FUNCTIONS: connectSocket(), setSocketToken(), disconnectSocket().
+DATA: Shared socket instance.
+*/
+
+
+import { io } from "socket.io-client";
 import { getToken, removeToken } from "../auth/auth.js";
 
 
@@ -12,93 +21,69 @@ const socket = io(SERVER_URL, {
     }
 });
 
+
+// Socket connected
 socket.on("connect", () => {
     console.log("Connected to Web Tycoon server:", socket.id);
 });
 
+// Socket disconnected
 socket.on("disconnect", (reason) => {
     console.log("Disconnected from server:", reason);
 });
 
+// Socket connection error
 socket.on("connect_error", (error) => {
     console.error("Socket connection error:", error.message);
 
-     // If the stored JWT is invalid,
-    // remove it so the user can log in again.
-
+     // If the stored JWT is invalid, removes it so the user can log in again
     if (error.message === "Invalid or expired authentication token.") {
         removeToken();
     }
-
 });
 
-// ==========================================
-// CONNECT SOCKET
-// ==========================================
 
+// Connect socket
 export function connectSocket() {
-
+    // If already connected, return
     if (socket.connected) {
         return Promise.resolve();
     }
 
-    return new Promise(
-        (resolve, reject) => {
-
-            const handleConnect =
-                () => {
-                    cleanup();
-                    resolve();
-                };
-
-            const handleError =
-                (error) => {
-                    cleanup();
-                    reject(error);
-                };
-
-            function cleanup() {
-
-                socket.off(
-                    "connect",
-                    handleConnect
-                );
-
-                socket.off(
-                    "connect_error",
-                    handleError
-                );
-            }
-
-            socket.once(
-                "connect",
-                handleConnect
-            );
-
-            socket.once(
-                "connect_error",
-                handleError
-            );
-
-            socket.connect();
+    return new Promise((resolve, reject) => {
+        // Successfully connected
+        const handleConnect = () => {
+            cleanup();
+            resolve();
+        };
+        // Connection failed
+        const handleError = (error) => {
+            cleanup();
+            reject(error);
+        };
+        // Remove temporary listeners
+        function cleanup() {
+            socket.off("connect", handleConnect);
+            socket.off("connect_error", handleError);
         }
-    );
+
+        socket.once("connect", handleConnect);
+        socket.once("connect_error", handleError);
+
+        socket.connect();
+    });
 }
 
-// ==========================================
-// UPDATE AUTH TOKEN
-// ==========================================
 
+// Update socket JWT token
 export function setSocketToken(token) {
     socket.auth = {
         token
     };
 }
 
-// ==========================================
-// DISCONNECT
-// ==========================================
 
+// Disconnect socket
 export function disconnectSocket() {
 
     if (socket.connected) {

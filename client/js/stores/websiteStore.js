@@ -1,3 +1,13 @@
+/*
+PURPOSE: Stores the player's websites.
+
+INPUT: Website data from server.
+OUTPUT: Reactive website list.
+FUNCTIONS: setWebsites(), updateWebsite(), clearWebsites().
+DATA: websites[].
+*/
+
+
 import { defineStore } from "pinia";
 
 
@@ -13,10 +23,6 @@ export const useWebsiteStore = defineStore("website", {
             this.websites = websites;
         },
 
-        addWebsite(website) {
-            this.websites.push(website);
-        },
-
         updateWebsite(updatedWebsite) {
             const index = this.websites.findIndex(
                 website => website.siteid === updatedWebsite.siteid
@@ -27,8 +33,9 @@ export const useWebsiteStore = defineStore("website", {
             }
         },
 
+        // Resets the store
         clearWebsites() {
-            this.websites = [];
+            this.$reset();
         },
     }
 

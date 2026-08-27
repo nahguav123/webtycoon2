@@ -1,28 +1,29 @@
-// This module handles the login of a player account in the game. 
-// It validates the input data, checks for existing usernames and passwords in the database, 
-// and returns the player data if the login is successful.
+/*
+PURPOSE: Logs in an existing player.
+
+INPUT: Username and password.
+OUTPUT: Player data + JWT.
+FUNCTIONS: loginPlayer().
+DATA: User and game data.
+*/
+
 
 import bcrypt from "bcrypt";
 
 import { getUserByUsername } from "../database/users.js";
-
 import { getUserData } from "../database/userData.js";
-
 import { generateToken } from "../auth/auth.js";
 
 
-// ==========================================
-// LOGIN PLAYER
-// ==========================================
 export async function loginPlayer(data) {
-    // VALIDATE INPUT
+    // Checks input data
     if (!data) {
         throw new Error(
             "No player data provided."
         );
     }
 
-    // Get all inputs
+    // Get all inputs and cleans them
     const username =
         typeof data.username === "string"
             ? data.username.trim()
@@ -33,62 +34,46 @@ export async function loginPlayer(data) {
             ? data.password
             : "";
 
-    // ==========================================
-    // VALIDATION
-    // ==========================================
-    // Username
+    // Validates username
     if (!username) {
         throw new Error(
             "Username is required."
         );
     }
 
-    // Password
+    // Validates password
     if (!password) {
         throw new Error(
             "Password is required."
         );
     }
 
-    // ==========================================
-    // DATABASE CHECKS
-    // ==========================================
-    //Username
+    // Checks username against database for user
     const existingUsername = await getUserByUsername(username);
-
     if (!existingUsername) {
         throw new Error("Invalid username or password.");
     }
 
-    // ==============
-    // Check Password
+    // Checks password against database for a match
     const passwordMatch = await bcrypt.compare(password, existingUsername.passwordHash);
-
     if (!passwordMatch) {
         throw new Error("Invalid username or password");
     }
 
-   // ===========
-   // Login User
+    // Store userid and email in variables
     const userid = Number(existingUsername.userid);
     const email = existingUsername.email;
 
-
-    // ==========================================
-    // GET GAME DATA
-    // ==========================================
-
+    // Get userData 
     const userData = await getUserData(userid);
-
     if (!userData) {
         throw new Error("Player game data not found.");
     }
 
-    // Generate JWT
+    // Generate JWT token
     const token = generateToken(userid);
 
-    // =========
-    // Return data to player frontend
+    // Return data to whoever called loginPlayer()
     return {
         token,
 

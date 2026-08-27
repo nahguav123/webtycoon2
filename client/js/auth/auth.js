@@ -1,14 +1,16 @@
-// ==========================================
-// JWT TOKEN STORAGE
-// ==========================================
+/*
+PURPOSE: Stores and manages the JWT.
+
+INPUT: JWT token.
+OUTPUT: Stored/retrieved/removed JWT.
+FUNCTIONS: getToken(), setToken(), removeToken(), hasToken().
+DATA: JWT in localStorage.
+*/
+
 
 const TOKEN_KEY = "token";
 
-
-// ==========================================
-// GET TOKEN
-// ==========================================
-
+// Gets token from localStoreage
 export function getToken() {
 
     return localStorage.getItem(
@@ -17,11 +19,7 @@ export function getToken() {
 
 }
 
-
-// ==========================================
-// SET TOKEN
-// ==========================================
-
+// Adds token to localStorage
 export function setToken(token) {
 
     if (!token) {
@@ -37,11 +35,7 @@ export function setToken(token) {
 
 }
 
-
-// ==========================================
-// REMOVE TOKEN
-// ==========================================
-
+// Removes token from localStorage
 export function removeToken() {
 
     localStorage.removeItem(
@@ -50,11 +44,7 @@ export function removeToken() {
 
 }
 
-
-// ==========================================
-// CHECK TOKEN
-// ==========================================
-
+// Checks if token exists
 export function hasToken() {
 
     return !!getToken();

@@ -1,10 +1,17 @@
+/*
+PURPOSE: Reads and creates user accounts.
+
+INPUT: User ID, username, email or account details.
+OUTPUT: User records/new user ID.
+FUNCTIONS: getUserById(), getUserByUsername(), getUserByEmail(), createUser(), createGuestUser().
+DATA: users table.
+*/
+
+
 import { dbpool } from "./connection.js";
 
-// ==========================================
-// USERS
-// ==========================================
 
-// await getUserById(userid); returns the user with the specified ID
+// Returns user with specified userid
 export async function getUserById(userid) {
     const rows = await dbpool.query(`
         SELECT
@@ -21,7 +28,7 @@ export async function getUserById(userid) {
     return rows[0] || null;
 }
 
-// await getUserByUsername(username); returns the user with the specified username
+// Returns user with specified username
 export async function getUserByUsername(username) {
     const rows = await dbpool.query(`
         SELECT
@@ -38,7 +45,7 @@ export async function getUserByUsername(username) {
     return rows[0] || null;
 }
 
-// await getUserByEmail(email); returns the user with the specified email
+// Returns user with specified email
 export async function getUserByEmail(email) {
     const rows = await dbpool.query(`
         SELECT
@@ -55,8 +62,11 @@ export async function getUserByEmail(email) {
     return rows[0] || null;
 }
 
-//Make the user creation in future also set the userData default values.
-// await createUser(username, email, passwordHash); creates a new user on the db
+// In the future these user creations need to also set default userData 
+// values in 1 transaction because current setup can leave a user created 
+// with no userData.
+
+// Creates a new user in the db
 export async function createUser(username, email, passwordHash) {
     const result = await dbpool.query(`
         INSERT INTO users
@@ -73,7 +83,7 @@ export async function createUser(username, email, passwordHash) {
     return result.insertId;
 }
 
-// await createGuestUser(username); creates a new guest user on the db
+// Creates a new guest user in the db
 export async function createGuestUser(username) {
 
     const result = await dbpool.query(`

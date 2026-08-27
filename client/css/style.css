@@ -1,3 +1,13 @@
+/*
+PURPOSE: Global client styling.
+
+INPUT: HTML/Vue elements.
+OUTPUT: Page layout and appearance.
+FUNCTIONS: None.
+DATA: CSS rules/classes.
+*/
+
+
 /********************************************/
 /* Global Styles */
 * {
