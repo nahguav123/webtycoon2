@@ -257,7 +257,7 @@ License information will be added when the project's distribution and licensing 
 
 ## Development
 
-Web Tycoon is developed by **Vaughan Hathaway** and **...**.
+Web Tycoon is developed by **Vaughan Hathaway** and **youcefb-dev AKA Nameless**.
 
 The project is actively being redesigned and improved, so parts of the architecture, database structure, and gameplay systems may change significantly during development.
 Note: AI will be used in assisting development but this project is not vibe coded. It has been critically thought about, analysed and planned using a human brain. 
