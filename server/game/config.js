@@ -18,6 +18,7 @@ export const GameConfig = {
     // New Website starting values
     STARTING_VISITORS_PER_HOUR: 10,
     STARTING_PROFIT_PER_HOUR: 0,
+	STARTING_VERSION: 1,
 
 
     // How often the game checks for updated income, visitors, development progress, etc - websocket refresh interval.
@@ -93,7 +94,7 @@ export const GameConfig = {
         Portfolio: { name: 'Portfolio', description: 'Showcase your work' },
         Forum: { name: 'Forum', description: 'Build a community' }
     },
-    DEFAULT_SITE_TYPE: "Blog",
+    DEFAULT_SITE_TYPE: "Store",
 
 
     // Advertising options available to websites.

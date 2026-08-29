@@ -12,7 +12,7 @@ import { dbpool } from "./connection.js";
 
 
 // Create initial game data for a new user
-export async function createUserData(userid, money, webdollars, level, websiteCount, teamCount) {
+export async function createUserDataDB(userid, money, webdollars, level, websiteCount, teamCount) {
     await dbpool.query(`
         INSERT INTO user_data (
             userid,
@@ -35,7 +35,7 @@ export async function createUserData(userid, money, webdollars, level, websiteCo
 }
 
 // Returns user data for specified userid
-export async function getUserData(userid) {
+export async function getUserDataDB(userid) {
     const rows = await dbpool.query(`
         SELECT
             userid,
@@ -54,7 +54,7 @@ export async function getUserData(userid) {
 
 
 // Updates the user data for specified userid - note all values are added to the existing values in the db, not replaced
-export async function saveUserData(moneyAmount, webdollarsAmount, level, websiteCount, teamCount, userid) {
+export async function saveUserDataDB(moneyAmount, webdollarsAmount, level, websiteCount, teamCount, userid) {
     await dbpool.query(`
         UPDATE user_data
         SET 

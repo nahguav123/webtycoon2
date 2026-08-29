@@ -1,9 +1,9 @@
 /*M!999999\- enable the sandbox mode */ 
--- MariaDB dump 10.19-12.3.2-MariaDB, for Win64 (AMD64)
+-- MariaDB dump 10.20-12.3.3-MariaDB, for Win64 (AMD64)
 --
 -- Host: localhost    Database: webtycoon
 -- ------------------------------------------------------
--- Server version	12.3.2-MariaDB
+-- Server version	12.3.3-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -130,7 +130,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`userid`),
   UNIQUE KEY `unique_username` (`username`),
   UNIQUE KEY `unique_email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,11 +140,6 @@ CREATE TABLE `users` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES
-(1,'vaughan','vaughan@hathaway.nz','$2b$12$wtsIXyMOlOFxFQynyUgOtu/Rfs9QP.PV/CfYOFoAkfS2IraIZUblq','2026-08-18 21:54:49'),
-(2,'nahguav1','vaughanhathaway@gmail.com','$2b$12$yan6JoKn5gQcmgx8H74GiuPcjesUfK1a1ATmHUxEzznfB0KWNs4uC','2026-08-18 22:01:51'),
-(3,'vaughan1','vaughan@test.com','$2b$12$GR4gKtUHqDeCL4QERiMzYe4v1C69/f00PxJRwKZR8epYKJf8LS78a','2026-08-18 22:05:18'),
-(4,'jess','jess@test.com','$2b$12$OE8Oel6tLdmUrWD2zEYlW.lzPfjcBg3ZSQJYzaERzQ3AKpjTvy5.C','2026-08-18 22:08:17');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -162,14 +157,16 @@ CREATE TABLE `websites` (
   `userid` int(10) unsigned NOT NULL,
   `domain` varchar(255) NOT NULL,
   `tld` varchar(50) NOT NULL,
+  `site_type` varchar(50) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `version` int(10) unsigned NOT NULL DEFAULT 1,
   `visitors_per_hour` int(10) unsigned NOT NULL DEFAULT 0,
   `profit_per_hour` decimal(15,2) NOT NULL DEFAULT 0.00,
   PRIMARY KEY (`siteid`),
+  UNIQUE KEY `unique_domain_tld` (`domain`,`tld`) USING BTREE,
   KEY `fk_websites_user` (`userid`),
   CONSTRAINT `fk_websites_user` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,4 +190,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-08-20 23:57:31
+-- Dump completed on 2026-08-29 23:07:20

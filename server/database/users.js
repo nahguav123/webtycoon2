@@ -12,7 +12,7 @@ import { dbpool } from "./connection.js";
 
 
 // Returns user with specified userid
-export async function getUserById(userid) {
+export async function getUserByIdDB(userid) {
     const rows = await dbpool.query(`
         SELECT
             userid,
@@ -29,7 +29,7 @@ export async function getUserById(userid) {
 }
 
 // Returns user with specified username
-export async function getUserByUsername(username) {
+export async function getUserByUsernameDB(username) {
     const rows = await dbpool.query(`
         SELECT
             userid,
@@ -46,7 +46,7 @@ export async function getUserByUsername(username) {
 }
 
 // Returns user with specified email
-export async function getUserByEmail(email) {
+export async function getUserByEmailDB(email) {
     const rows = await dbpool.query(`
         SELECT
             userid,
@@ -67,7 +67,7 @@ export async function getUserByEmail(email) {
 // with no userData.
 
 // Creates a new user in the db
-export async function createUser(username, email, passwordHash) {
+export async function createUserDB(username, email, passwordHash) {
     const result = await dbpool.query(`
         INSERT INTO users
             (username, email, password_hash)
@@ -84,8 +84,7 @@ export async function createUser(username, email, passwordHash) {
 }
 
 // Creates a new guest user in the db
-export async function createGuestUser(username) {
-
+export async function createGuestUserDB(username) {
     const result = await dbpool.query(`
         INSERT INTO users (
             username,

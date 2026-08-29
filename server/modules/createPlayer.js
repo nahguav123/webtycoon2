@@ -3,22 +3,16 @@ PURPOSE: Creates a registered player.
 
 INPUT: Username, email and password.
 OUTPUT: New player data.
-FUNCTIONS: isValidEmail(), createPlayer().
+FUNCTIONS: createPlayer().
 DATA: User account + starting game data.
 */
 
 
 import bcrypt from "bcrypt";
 
-import { getUserByUsername, getUserByEmail, createUser } from "../database/users.js";
-import { createUserData } from "../database/userData.js";
+import { getUserByUsernameDB, getUserByEmailDB, createUserDB } from "../database/users.js";
+import { createUserDataDB } from "../database/userData.js";
 import { GameConfig } from "../game/config.js";
-
-
-// Validate email
-function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
 
 
 export async function createPlayer(data) {
@@ -73,7 +67,7 @@ export async function createPlayer(data) {
             "Email is required."
         );
     }
-    if (!isValidEmail(email)) {
+    if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
         throw new Error(
             "Invalid email address."
         );
@@ -92,7 +86,7 @@ export async function createPlayer(data) {
     }
 
     // Checks username against database for duplicates
-    const existingUsername = await getUserByUsername(username);
+    const existingUsername = await getUserByUsernameDB(username);
     if (existingUsername) {
         throw new Error(
             "Username is already taken."
@@ -100,7 +94,7 @@ export async function createPlayer(data) {
     }
 
     // Checks email against database for duplicates
-    const existingEmail = await getUserByEmail(email);
+    const existingEmail = await getUserByEmailDB(email);
     if (existingEmail) {
         throw new Error(
             "Email is already registered."
@@ -111,7 +105,7 @@ export async function createPlayer(data) {
     const passwordHash = await bcrypt.hash(password, 12);
 
    // Creates user and stores userid
-    const userid = Number(await createUser(
+    const userid = Number(await createUserDB(
         username,
         email,
         passwordHash
@@ -125,7 +119,7 @@ export async function createPlayer(data) {
     const teamCount = 0;
 
     // Stores starting game data in db
-    await createUserData(
+    await createUserDataDB(
         userid,
         money,
         webdollars,
@@ -136,7 +130,6 @@ export async function createPlayer(data) {
 
     // Returns data to whoever called createPlayer()
     return {
-
     userid,
     username,
     email,

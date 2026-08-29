@@ -78,7 +78,7 @@ DATA: Form fields and registration status/message.
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { createPlayer as createPlayerSocket } from "../js/socket/playerSocket.js";
+import { requestCreatePlayer } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
 
@@ -134,7 +134,7 @@ async function submitRegister() {
     isRegistering.value = true;
 
     // createPlayerSocket() gets the data from Pinia
-    const player = await createPlayerSocket(
+    const player = await requestCreatePlayer(
       username.value.trim(),
       email.value.trim(),
       password.value

@@ -36,12 +36,14 @@ CREATE TABLE websites (
     userid INT UNSIGNED NOT NULL,
     domain VARCHAR(255) NOT NULL,
     tld VARCHAR(50) NOT NULL,
+	site_type VARCHAR(50) NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version INT UNSIGNED NOT NULL DEFAULT 1,
     visitors_per_hour INT UNSIGNED NOT NULL DEFAULT 0,
     profit_per_hour DECIMAL(15,2) NOT NULL DEFAULT 0.00,
 
     PRIMARY KEY (siteid),
+	UNIQUE KEY unique_domain_tld (domain, tld),
 
     CONSTRAINT fk_websites_user
         FOREIGN KEY (userid)

@@ -6,18 +6,16 @@ import router from "./vueRouter";
 
 import "../css/style.css";
 
-import { restoreSession } from "./socket/playerSocket.js";
-import { usePlayerStore } from "./stores/playerStore.js";
+import { requestRestoreSession } from "./socket/playerSocket.js";
+import { storeWebsiteCreationOptions } from "./components/configLoader.js";
 
 const app = createApp(App);
-
 app.use(createPinia());
 
-// Remove maybe?
-const playerStore = usePlayerStore();
+// Run configLoader and store values in websiteStore on inital game load.
+await storeWebsiteCreationOptions();
 
-await restoreSession();
+await requestRestoreSession();
 
 app.use(router);
-
 app.mount("#app");

@@ -27,7 +27,7 @@ DATA: Form fields and login status/message.
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { loginPlayer as loginPlayerSocket } from "../js/socket/playerSocket.js";
+import { requestLoginPlayer } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
 
@@ -66,7 +66,7 @@ async function submitLogin() {
         isLoggingIn.value = true;
 
         // loginPlayerSocket() gets the data from Pinia
-        const player = await loginPlayerSocket(
+        const player = await requestLoginPlayer(
             username.value.trim(),
             password.value
         );

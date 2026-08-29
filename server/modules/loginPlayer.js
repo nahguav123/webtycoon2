@@ -10,8 +10,8 @@ DATA: User and game data.
 
 import bcrypt from "bcrypt";
 
-import { getUserByUsername } from "../database/users.js";
-import { getUserData } from "../database/userData.js";
+import { getUserByUsernameDB } from "../database/users.js";
+import { getUserDataDB } from "../database/userData.js";
 import { generateToken } from "../auth/auth.js";
 
 
@@ -49,7 +49,7 @@ export async function loginPlayer(data) {
     }
 
     // Checks username against database for user
-    const existingUsername = await getUserByUsername(username);
+    const existingUsername = await getUserByUsernameDB(username);
     if (!existingUsername) {
         throw new Error("Invalid username or password.");
     }
@@ -65,7 +65,7 @@ export async function loginPlayer(data) {
     const email = existingUsername.email;
 
     // Get userData 
-    const userData = await getUserData(userid);
+    const userData = await getUserDataDB(userid);
     if (!userData) {
         throw new Error("Player game data not found.");
     }

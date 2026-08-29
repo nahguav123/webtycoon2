@@ -56,7 +56,7 @@ DATA: errorMessage.
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { createGuest } from "../js/socket/playerSocket.js";
+import { requestCreateGuest } from "../js/socket/playerSocket.js";
 
 const router = useRouter();
 
@@ -67,7 +67,7 @@ async function playAsGuest() {
   errorMessage.value = "";
 
   try {
-    const player = await createGuest();
+    const player = await requestCreateGuest();
 
     console.log(
       "Successfully created guest account",

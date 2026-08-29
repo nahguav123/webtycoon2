@@ -1,10 +1,10 @@
 /*
-PURPOSE: Stores the player's websites.
+PURPOSE: Stores the player's websites and game config options.
 
 INPUT: Website data from server.
 OUTPUT: Reactive website list.
-FUNCTIONS: setWebsites(), updateWebsite(), clearWebsites().
-DATA: websites[].
+FUNCTIONS: clearWebsites().
+DATA: websites[], tldOptions and siteTypes.
 */
 
 
@@ -15,23 +15,15 @@ export const useWebsiteStore = defineStore("website", {
 
     state: () => ({
         websites: [],
-    }),
 
+		tldOptions: {},
+		defaultTld: {},
+		siteTypes: {},
+		defaultSiteType: {}
+    }),
+	
 
     actions: {
-        setWebsites(websites) {
-            this.websites = websites;
-        },
-
-        updateWebsite(updatedWebsite) {
-            const index = this.websites.findIndex(
-                website => website.siteid === updatedWebsite.siteid
-            );
-
-            if (index !== -1) {
-                this.websites[index] = updatedWebsite;
-            }
-        },
 
         // Resets the store
         clearWebsites() {

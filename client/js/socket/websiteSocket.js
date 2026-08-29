@@ -8,37 +8,47 @@ DATA: Website list/details.
 */
 
 
-import socket from "./socket.js";
+import socket, { connectSocket } from "./socket.js";
 import { useWebsiteStore } from "../stores/websiteStore.js";
 
 
-// Request players websites
-export function requestWebsites() {
-    socket.emit("websites:get");
+// Request players websites and adds to websiteStore
+export async function requestWebsites() {
+	await connectSocket();
+
+	return new Promise((resolve, reject) => {
+		const websiteStore = useWebsiteStore();
+
+		socket.emit("websitesList:request");
+
+		socket.once("websitesList:loaded", (websites) => {
+			// Adds websites to websiteStore
+			websiteStore.websites = websites;
+			resolve(websites);
+		});
+
+		socket.once("websitesList:error", (error) => {
+			reject(new Error(error.message || "Failed to load websites."));
+		});
+	});
 }
 
-// Receives list of players websites and adds to websiteStore
-socket.on("websites:list", (websites) => {
-    const websiteStore = useWebsiteStore();
-    websiteStore.setWebsites(websites);
-});
+// Request to create a new website
+export async function requestCreateWebsite(data) { 
+	await connectSocket();
 
-// Receives error when requesting websites
-socket.on("websites:error", (error) => {
-    console.error("Website error:", error.message);
-});
-
-//Request player single website - NOT IN USE YET
-export function requestWebsite(siteid) {
-    socket.emit("website:get", {siteid});
+	return new Promise((resolve, reject) => { 
+		socket.emit("websiteCreate:request", data); 
+		
+		socket.once("websiteCreated:loaded", (website) => { 
+			resolve(website); 
+		}); 
+		
+		socket.once("websiteCreate:error", (error) => { 
+			reject( new Error( error.message || "Failed to create website." ) ); 
+		}); 
+	}); 
 }
-
-// Receives update for player single website and modifys websiteStore - NOT IN USE YET
-socket.on("website:update", (website) => {
-    const websiteStore = useWebsiteStore();
-    websiteStore.updateWebsite(website);
-});
-
 
 
 

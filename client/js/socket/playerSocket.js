@@ -3,7 +3,7 @@ PURPOSE: Handles player login, registration and logout.
 
 INPUT: Login/register/guest details and JWT.
 OUTPUT: Player data and JWT.
-FUNCTIONS: createGuest(), createPlayer(), loginPlayer(), restoreSession(), logoutPlayer().
+FUNCTIONS: requestCreateGuest(), requestCreatePlayer(), requestLoginPlayer(), requestRestoreSession(), logoutPlayer().
 DATA: Player data, JWT.
 */
 
@@ -13,17 +13,18 @@ import { getToken, setToken, removeToken } from "../auth/auth.js";
 import { usePlayerStore } from "../stores/playerStore.js";
 
 
-export async function createGuest() {
+// Request creation of new guest account and sets token
+export async function requestCreateGuest() {
     await connectSocket();
 
     return new Promise((resolve, reject) => {
         const playerStore = usePlayerStore();
 
         // Requests guest account creation
-        socket.emit("guest:create");
+        socket.emit("guestCreate:request");
 
         // Receives new guest account data
-        socket.once("guest:created", (data) => {
+        socket.once("guestCreated:loaded", (data) => {
             // Adds JWT token to local storage
             setToken(data.token);
             // Stores socket token for future reconnects
@@ -35,52 +36,52 @@ export async function createGuest() {
         });
 
         // Receives error when creating guest
-        socket.once("guest:error", (error) => {
+        socket.once("guestCreate:error", (error) => {
             reject(new Error(error.message || "Failed to create guest account"));
         });
     });
 }
 
-
-export async function createPlayer(username, email, password) {
+// Request creation of new player account
+export async function requestCreatePlayer(username, email, password) {
     await connectSocket();
 
     return new Promise((resolve, reject) => {
         // Requests player account creation
-        socket.emit("player:create", {
+        socket.emit("playerCreate:request", {
             username,
             email,
             password
         });
 
         // Receives new player data
-        socket.once("player:created", (data) => {
+        socket.once("playerCreated:loaded", (data) => {
             // Returns player data to whoever called createPlayer()
             resolve(data);
         });
 
         // Receives error when creating player
-        socket.once("player:error", (error) => {
+        socket.once("playerCreate:error", (error) => {
             reject(new Error(error.message || "Failed to create player account"));
         });
     });
 }
 
-
-export async function loginPlayer(username, password) {
+// Request to login to player account
+export async function requestLoginPlayer(username, password) {
     await connectSocket();
 
     return new Promise((resolve, reject) => {
         const playerStore = usePlayerStore();
 
         // Requests player login
-        socket.emit("player:login", {
+        socket.emit("playerLogin:request", {
             username,
             password
         });
 
         // Receives loggedIn player data
-        socket.once("player:loggedIn", (data) => {
+        socket.once("playerLoggedIn:loaded", (data) => {
             // Adds JWT token to local storage
             setToken(data.token);
             // Stores socket token for future reconnects
@@ -92,14 +93,14 @@ export async function loginPlayer(username, password) {
         });
 
         // Receives error when logging in player
-        socket.once("login:error", (error) => {
+        socket.once("playerLogin:error", (error) => {
             reject(new Error(error.message || "Failed to login to player account"));
         });
     });
 }
 
-
-export async function restoreSession() {
+// Request to restore player session
+export async function requestRestoreSession() {
     const token = getToken();
 
     // Returns false if there is no saved JWT token
@@ -118,10 +119,10 @@ export async function restoreSession() {
             const playerStore = usePlayerStore();
 
             // Requests player session restoration
-            socket.emit("player:restore");
+            socket.emit("playerRestore:request");
 
             // Receives restored player data
-            socket.once("player:restored", (data) => {
+            socket.once("playerRestored:loaded", (data) => {
                 // Stores player data in Pinia
                 playerStore.setPlayer(data);
 
@@ -130,9 +131,8 @@ export async function restoreSession() {
             });
 
             // Receives error when restoring session
-            socket.once("player:restore:error", (error) => {
+            socket.once("playerRestore:error", (error) => {
                 console.error("Failed to restore session:", error.message);
-
                 // Removes invalid JWT token
                 removeToken();
                 // Clears player data from Pinia
@@ -146,7 +146,6 @@ export async function restoreSession() {
 
     } catch (error) {
         console.error("Failed to connect while restoring session:", error);
-
         // Removes invalid/unusable JWT token
         removeToken();
         // Disconnects socket
@@ -156,7 +155,7 @@ export async function restoreSession() {
     }
 }
 
-
+// function run when player clicks logout button
 export function logoutPlayer() {
     const playerStore = usePlayerStore();
     // Removes JWT token from localStorage and socket token

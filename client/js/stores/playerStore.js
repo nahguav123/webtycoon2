@@ -2,7 +2,7 @@
 PURPOSE: Stores the current player's data.
 
 INPUT: Player data from server.
-OUTPUT: Reactive player data for Vue.
+OUTPUT: Reactive player data.
 FUNCTIONS: setPlayer(), clearPlayer().
 DATA: userid, username, email, money, webdollars, level, counts.
 */
@@ -24,10 +24,6 @@ export const usePlayerStore = defineStore("player", {
         webdollars: 0,
         websiteCount: 0,
         teamCount: 0,
-
-        // Dont think these are used anymore, remove maybe?
-        isLoading: false,
-        sessionRestored: false
     }),
 
     getters: {
