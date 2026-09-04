@@ -10,6 +10,7 @@ DATA: Website list/details.
 
 import socket, { connectSocket } from "./socket.js";
 import { useWebsiteStore } from "../stores/websiteStore.js";
+import { usePlayerStore } from "../stores/playerStore.js";
 
 
 // Request players websites and adds to websiteStore
@@ -38,9 +39,13 @@ export async function requestCreateWebsite(data) {
 	await connectSocket();
 
 	return new Promise((resolve, reject) => { 
+		const playerStore = usePlayerStore();
+
 		socket.emit("websiteCreate:request", data); 
 		
 		socket.once("websiteCreated:loaded", (website) => { 
+			// Updates player money in playerStore
+			playerStore.money = Number(website.money);
 			resolve(website); 
 		}); 
 		

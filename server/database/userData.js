@@ -1,38 +1,15 @@
 /*
-PURPOSE: Reads and saves player game data.
+PURPOSE: Reads player game data.
 
 INPUT: User ID and game values.
 OUTPUT: Player game data/database updates.
-FUNCTIONS: createUserData(), getUserData(), saveUserData().
+FUNCTIONS: getUserData(), saveUserData().
 DATA: user_data table.
 */
 
 
 import { dbpool } from "./connection.js";
 
-
-// Create initial game data for a new user
-export async function createUserDataDB(userid, money, webdollars, level, websiteCount, teamCount) {
-    await dbpool.query(`
-        INSERT INTO user_data (
-            userid,
-            money,
-            webdollars,
-            level,
-            website_count,
-            team_count,
-            last_tick
-        )
-        VALUES (?, ?, ?, ?, ?, ?, NOW())
-    `, [
-        userid,
-        money,
-        webdollars,
-        level,
-        websiteCount,
-        teamCount
-    ]);
-}
 
 // Returns user data for specified userid
 export async function getUserDataDB(userid) {
@@ -51,7 +28,6 @@ export async function getUserDataDB(userid) {
 
     return rows[0] || null;
 }
-
 
 // Updates the user data for specified userid - note all values are added to the existing values in the db, not replaced
 export async function saveUserDataDB(moneyAmount, webdollarsAmount, level, websiteCount, teamCount, userid) {

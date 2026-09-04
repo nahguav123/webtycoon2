@@ -72,7 +72,7 @@ DATA: Filters, sorting, playerStore, websiteStore.
 
                     <div class="websites-topbar-right">
                         <nav>
-                            <a class="websites-create-button" @click="createWebsite">Create a site</a>
+                            <RouterLink to="/create-website" class="websites-create-button">Create a site</RouterLink>
                         </nav>
                     </div>
                 </header>
@@ -128,7 +128,7 @@ DATA: Filters, sorting, playerStore, websiteStore.
                         </div>
 
                         <p v-if="websiteStore.websites.length === 0" class="websites-empty-note">
-                            No websites yet — <a href="createwebsite.html">create your first one</a>.
+                            No websites yet — <RouterLink to="/create-website">create your first one</RouterLink>.
                         </p>
                     </div>
                 </section>
@@ -160,10 +160,6 @@ const websiteStore = useWebsiteStore();
 const filters = ["All", "Notifications"]; 
 const activeFilter = ref("All"); 
 const sortOption = ref("profit"); 
-
-function createWebsite() {
-    router.push("/create-website");
-}
 
 function logout() {
     logoutPlayer();

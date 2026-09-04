@@ -1,9 +1,9 @@
 /*
-PURPOSE: Reads and creates user accounts.
+PURPOSE: Reads user accounts.
 
 INPUT: User ID, username, email or account details.
 OUTPUT: User records/new user ID.
-FUNCTIONS: getUserById(), getUserByUsername(), getUserByEmail(), createUser(), createGuestUser().
+FUNCTIONS: getUserById(), getUserByUsername(), getUserByEmail(), createGuestUser().
 DATA: users table.
 */
 
@@ -60,42 +60,5 @@ export async function getUserByEmailDB(email) {
     `, [email]);
 
     return rows[0] || null;
-}
-
-// In the future these user creations need to also set default userData 
-// values in 1 transaction because current setup can leave a user created 
-// with no userData.
-
-// Creates a new user in the db
-export async function createUserDB(username, email, passwordHash) {
-    const result = await dbpool.query(`
-        INSERT INTO users
-            (username, email, password_hash)
-        VALUES
-            (?, ?, ?)
-    `, [
-        username,
-        email,
-        passwordHash
-    ]);
-
-    console.log("Created user:", result.insertId);
-    return result.insertId;
-}
-
-// Creates a new guest user in the db
-export async function createGuestUserDB(username) {
-    const result = await dbpool.query(`
-        INSERT INTO users (
-            username,
-            email,
-            password_hash
-        )
-        VALUES (?, NULL, NULL)
-    `, [
-        username
-    ]);
-
-    return result.insertId;
 }
 

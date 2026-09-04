@@ -103,7 +103,7 @@
 						</div>
 
 						<!-- Submit -->
-						<button class="create-website-button" type="submit" :disabled="isCreating">{{ isCreating ? "Creating..." : "Create Website" }}</button>
+						<button class="create-website-button" type="submit" :disabled="isCreating">{{ isCreating ? "Creating..." : "Create Website: $" + selectedTldCost }}</button>
 
 					</form>
 
@@ -141,6 +141,11 @@ const siteType = ref(websiteStore.defaultSiteType);
 const message = ref(""); 
 const messageColor = ref(""); 
 const isCreating = ref(false);
+
+// Computed property for selected TLD cost in submit button
+const selectedTldCost = computed(() => {
+    return websiteStore.tldOptions[tld.value]?.cost ?? 0;
+});
 
 
 // Website creation function

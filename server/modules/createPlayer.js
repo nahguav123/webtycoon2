@@ -1,5 +1,5 @@
 /*
-PURPOSE: Creates a registered player.
+PURPOSE: Creates a registered player with db transaction.
 
 INPUT: Username, email and password.
 OUTPUT: New player data.
@@ -10,8 +10,7 @@ DATA: User account + starting game data.
 
 import bcrypt from "bcrypt";
 
-import { getUserByUsernameDB, getUserByEmailDB, createUserDB } from "../database/users.js";
-import { createUserDataDB } from "../database/userData.js";
+import { dbpool } from "../database/connection.js";
 import { GameConfig } from "../game/config.js";
 
 
@@ -85,31 +84,8 @@ export async function createPlayer(data) {
         );
     }
 
-    // Checks username against database for duplicates
-    const existingUsername = await getUserByUsernameDB(username);
-    if (existingUsername) {
-        throw new Error(
-            "Username is already taken."
-        );
-    }
-
-    // Checks email against database for duplicates
-    const existingEmail = await getUserByEmailDB(email);
-    if (existingEmail) {
-        throw new Error(
-            "Email is already registered."
-        );
-    }
-
-    // Hashes the password
+    // Hashes the password before opening a database transaction 
     const passwordHash = await bcrypt.hash(password, 12);
-
-   // Creates user and stores userid
-    const userid = Number(await createUserDB(
-        username,
-        email,
-        passwordHash
-    ));
 
     // Sets starting game data
     const money = GameConfig.STARTING_MONEY;
@@ -118,26 +94,116 @@ export async function createPlayer(data) {
     const websiteCount = 0;
     const teamCount = 0;
 
-    // Stores starting game data in db
-    await createUserDataDB(
-        userid,
-        money,
-        webdollars,
-        level,
-        websiteCount,
-        teamCount
-    );
+    // Database transaction to create user and starting user data 
+    let connection;
 
-    // Returns data to whoever called createPlayer()
-    return {
-    userid,
-    username,
-    email,
-    
-    money,
-    webdollars,
-    level,
-    websiteCount,
-    teamCount
-    };
+    try {
+        // Gets dedicated database connection and starts transaction
+        connection = await dbpool.getConnection(); 
+        await connection.beginTransaction();
+
+        // Checks username against database for duplicates
+        const existingUsername = await connection.query(` 
+            SELECT 
+                userid 
+            FROM users 
+            WHERE username = ? 
+            LIMIT 1
+        `, [ 
+            username 
+        ]);
+
+        if (existingUsername.length > 0) { 
+            throw new Error("Username is already taken." ); 
+        }
+
+        // Checks email against database for duplicates 
+        const existingEmail = await connection.query(` 
+            SELECT 
+                userid 
+            FROM users 
+            WHERE email = ? 
+            LIMIT 1
+        `, [ 
+            email 
+        ]); 
+        
+        if (existingEmail.length > 0) { 
+            throw new Error( "Email is already registered." ); 
+        }
+
+        // Creates user in database 
+        const userResult = await connection.query(` 
+            INSERT INTO users ( 
+                username, 
+                email, 
+                password_hash 
+            ) 
+            VALUES (?, ?, ?)
+        `, [ 
+            username, 
+            email, 
+            passwordHash 
+        ]);
+
+        // Stores newly created userid 
+        const userid = Number(userResult.insertId);
+
+        // Creates starting game data in database 
+        await connection.query(` 
+            INSERT INTO user_data ( 
+                userid, 
+                money, 
+                webdollars, 
+                level, 
+                website_count, 
+                team_count, 
+                last_tick 
+            ) 
+            VALUES (?, ?, ?, ?, ?, ?, NOW())
+        `, [ 
+            userid, 
+            money, 
+            webdollars, 
+            level, 
+            websiteCount, 
+            teamCount 
+        ]);
+
+        // Commits transaction
+        await connection.commit();
+
+        // Returns data to whoever called createPlayer() 
+        return { 
+            userid, 
+            username, 
+            email, 
+
+            money, 
+            webdollars, 
+            level, 
+            websiteCount, 
+            teamCount 
+        };
+
+    } catch (error) { 
+        // Rolls back all database changes in case of error 
+        if (connection) { 
+            await connection.rollback(); 
+        } 
+        throw error; 
+
+    } finally { 
+        // Releases database connection 
+        if (connection) { 
+            await connection.release(); 
+        } 
+    } 
 }
+
+
+
+
+
+
+
