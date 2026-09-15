@@ -34,6 +34,58 @@ export async function requestWebsites() {
 	});
 }
 
+// Tidy up later
+export async function requestWebsite(siteid) {
+    await connectSocket();
+
+    return new Promise((resolve, reject) => {
+        const websiteStore = useWebsiteStore();
+        socket.emit("website:request", { siteid: Number(siteid) });
+
+        socket.once("website:loaded", (website) => {
+            websiteStore.currentWebsite = website;
+            const index = websiteStore.websites.findIndex(
+                (site) => Number(site.siteid) === Number(website.siteid)
+            );
+            if (index >= 0) websiteStore.websites[index] = website;
+            else websiteStore.websites.push(website);
+            resolve(website);
+        });
+
+        socket.once("website:error", (error) => {
+            reject(new Error(error.message || "Failed to load website."));
+        });
+    });
+}
+
+// Tidy up later
+export async function websiteAction(event, data) {
+    await connectSocket();
+
+    return new Promise((resolve, reject) => {
+        socket.emit(event, data);
+
+        const loadedEvent = `${event.replace(":request", "")}:loaded`;
+        const errorEvent = `${event.replace(":request", "")}:error`;
+
+        socket.once(loadedEvent, (result) => {
+            const websiteStore = useWebsiteStore();
+            if (result?.website) {
+                websiteStore.currentWebsite = result.website;
+                const index = websiteStore.websites.findIndex(
+                    (site) => Number(site.siteid) === Number(result.website.siteid)
+                );
+                if (index >= 0) websiteStore.websites[index] = result.website;
+            }
+            resolve(result);
+        });
+
+        socket.once(errorEvent, (error) => {
+            reject(new Error(error.message || "Website action failed."));
+        });
+    });
+}
+
 // Request to create a new website
 export async function requestCreateWebsite(data) { 
 	await connectSocket();

@@ -166,6 +166,10 @@ function logout() {
     router.push("/");
 }
 
+function openWebsite(siteid) {
+    router.push(`/websites/${siteid}`);
+}
+
 // Lifecycle
 onMounted(async () => {
     requestWebsites();

@@ -127,9 +127,17 @@ export async function createWebsite(userid, data) {
                 site_type,
                 version,
                 visitors_per_hour,
-                profit_per_hour
+                profit_per_hour, 
+                hosting_plan, 
+                hosting_expires_at, 
+                domain_expires_at,
+                dev_design_points, 
+                dev_frontend_points, 
+                dev_backend_points, 
+                dev_assignments, 
+                advertising
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             userid,
             domain,
@@ -137,7 +145,15 @@ export async function createWebsite(userid, data) {
             siteType,
             version,
             visitorsPerHour,
-            profitPerHour
+            profitPerHour,
+            GameConfig.DEFAULT_HOSTING_PLAN,
+            new Date(Date.now() + GameConfig.HOSTING_PLANS[GameConfig.DEFAULT_HOSTING_PLAN].hours * 3600000),
+            new Date(Date.now() + GameConfig.DOMAIN_DURATION_HOURS * 3600000),
+            0, 
+            0, 
+            0,
+            JSON.stringify({}),
+            JSON.stringify([])
         ]);
 
         // Gets user data after website creation to return updated money

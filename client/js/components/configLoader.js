@@ -41,6 +41,8 @@ export async function storeWebsiteCreationOptions() {
 		websiteStore.defaultTld = options.defaultTld;
 		websiteStore.siteTypes = options.siteTypes;
 		websiteStore.defaultSiteType = options.defaultSiteType;
+        websiteStore.hostingPlans = options.hostingPlans || {};
+        websiteStore.defaultHostingPlan = options.defaultHostingPlan || null;
 
     } catch (error) {
 		console.error("Config load error:", error.message);

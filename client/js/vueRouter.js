@@ -15,6 +15,7 @@ import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
 import Websites from "../views/Websites.vue";
 import CreateWebsite from "../views/CreateWebsite.vue";
+import SiteDetail from "../views/SiteDetail.vue";
 
 import { usePlayerStore } from "./stores/playerStore.js";
 
@@ -41,6 +42,13 @@ const routes = [
     {
         path: "/create-website",
         component: CreateWebsite,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: "/websites/:siteid",
+        component: SiteDetail,
         meta: {
             requiresAuth: true
         }

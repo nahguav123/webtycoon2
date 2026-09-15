@@ -17,6 +17,8 @@ export function websiteCreationOptions() {
 		tlds: GameConfig.TLD_OPTIONS,
 		defaultTld: GameConfig.DEFAULT_TLD,
 		siteTypes: GameConfig.SITE_TYPES,
-		defaultSiteType: GameConfig.DEFAULT_SITE_TYPE
+		defaultSiteType: GameConfig.DEFAULT_SITE_TYPE,
+		hostingPlans: GameConfig.HOSTING_PLANS,
+		defaultHostingPlan: GameConfig.DEFAULT_HOSTING_PLAN
     };
 }

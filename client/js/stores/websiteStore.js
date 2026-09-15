@@ -15,11 +15,13 @@ export const useWebsiteStore = defineStore("website", {
 
     state: () => ({
         websites: [],
-
+        currentWebsite: null,
 		tldOptions: {},
 		defaultTld: {},
 		siteTypes: {},
-		defaultSiteType: {}
+		defaultSiteType: {},
+        hostingPlans: {},
+        defaultHostingPlan: null,
     }),
 	
 
@@ -28,6 +30,9 @@ export const useWebsiteStore = defineStore("website", {
         // Resets the store
         clearWebsites() {
             this.$reset();
+        },
+        setCurrentWebsite(website) {
+            this.currentWebsite = website || null;
         },
     }
 
