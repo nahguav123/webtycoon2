@@ -34,16 +34,19 @@ export async function requestWebsites() {
 	});
 }
 
-// Tidy up later
+// Request a specific website by siteid and adds to websiteStore
 export async function requestWebsite(siteid) {
     await connectSocket();
 
     return new Promise((resolve, reject) => {
         const websiteStore = useWebsiteStore();
-        socket.emit("website:request", { siteid: Number(siteid) });
 
-        socket.once("website:loaded", (website) => {
+        socket.emit("websiteSingle:request", { siteid: Number(siteid) });
+
+        socket.once("websiteSingle:loaded", (website) => {
+			// Adds website to websiteStore
             websiteStore.currentWebsite = website;
+			// Not sure what this does?
             const index = websiteStore.websites.findIndex(
                 (site) => Number(site.siteid) === Number(website.siteid)
             );
@@ -52,7 +55,7 @@ export async function requestWebsite(siteid) {
             resolve(website);
         });
 
-        socket.once("website:error", (error) => {
+        socket.once("websiteSingle:error", (error) => {
             reject(new Error(error.message || "Failed to load website."));
         });
     });

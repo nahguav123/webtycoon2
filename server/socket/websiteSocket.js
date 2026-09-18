@@ -11,14 +11,11 @@ DATA: Website data.
 import {
     getWebsitesListDB,
     getWebsiteDataDB,
-    updateWebsiteHostingDB,
-    updateWebsiteDomainDB,
-    setWebsiteAdvertisingDB,
-    setWebsiteDevAssignmentDB,
-    publishWebsiteVersionDB,
 } from "../database/websites.js";
 
 import { createWebsite } from "../modules/createWebsite.js";
+import { websiteHosting } from "../modules/websiteHosting.js";
+import { websiteDomain } from "../modules/websiteDomain.js";
 import { websiteCreationOptions } from "../modules/configSender.js";
 
 
@@ -95,61 +92,60 @@ export function handleWebsiteSocket(socket) {
 		}
 	});
 
-    // ALL OF THIS NEEDS TIDYING UP LATER, IT'S A MESS
-    socket.on("website:request", async ({ siteid } = {}) => {
+	// Receives request for a single website data by siteid.
+    socket.on("websiteSingle:request", async ({ siteid } = {}) => {
 		try {
+			// Checks if user is authenticated and gets userid
 			const userid = requireAuthentication(socket);
+			// Gets website data for userid and siteid from DB
 			const website = await getWebsiteDataDB(userid, Number(siteid));
-			if (!website) throw new Error("Website not found.");
-			socket.emit("website:loaded", website);
+			
+			// Sends website data back to player
+			socket.emit("websiteSingle:loaded", website);
+
 		} catch (error) {
-			socket.emit("website:error", { message: error.message || "Failed to retrieve website." });
+			console.error("Failed to get website:", error);
+			// Sends error back to player
+			socket.emit("websiteSingle:error", { message: error.message || "Failed to retrieve website." });
 		}
 	});
 
-	socket.on("websiteHosting:request", async ({ siteid, plan } = {}) => {
+	// Receives request to renew/update website hosting plan
+	socket.on("websiteHostingUpdate:request", async ({ siteid, hostingPlan, renewal } = {}) => {
 		try {
+			// Checks if user is authenticated and gets userid
 			const userid = requireAuthentication(socket);
-			await updateWebsiteHostingDB(userid, Number(siteid), plan);
+			// Renews/updates website hosting plan in DB
+			await websiteHosting(userid, Number(siteid), hostingPlan, Boolean(renewal));
+			// Gets website data for userid and siteid from DB
 			const website = await getWebsiteDataDB(userid, Number(siteid));
-			socket.emit("websiteHosting:loaded", { website });
-		} catch (error) { socket.emit("websiteHosting:error", { message: error.message || "Failed to update hosting." }); }
+			
+			// Sends website data back to player
+			socket.emit("websiteHostingUpdate:loaded", { website });
+
+		} catch (error) { 
+			console.error("Failed to update website hosting:", error);
+			// Sends error back to player
+			socket.emit("websiteHostingUpdate:error", { message: error.message || "Failed to update hosting." }); }
 	});
 
-	socket.on("websiteDomain:request", async ({ siteid, domain, tld } = {}) => {
+	// Receives request to renew/update website domain/tld
+	socket.on("websiteDomainUpdate:request", async ({ siteid, domain, tld, renewal } = {}) => {
 		try {
+			// Checks if user is authenticated and gets userid
 			const userid = requireAuthentication(socket);
-			await updateWebsiteDomainDB(userid, Number(siteid), String(domain || "").trim().toLowerCase(), String(tld || "").trim().toLowerCase());
+			// Renews/updates website domain/tld in DB
+			await websiteDomain(userid, Number(siteid), String(domain), String(tld), Boolean(renewal));
+			// Gets website data for userid and siteid from DB
 			const website = await getWebsiteDataDB(userid, Number(siteid));
-			socket.emit("websiteDomain:loaded", { website });
-		} catch (error) { socket.emit("websiteDomain:error", { message: error.message || "Failed to update domain." }); }
-	});
 
-	socket.on("websiteAdvertising:request", async ({ siteid, optionId, enabled } = {}) => {
-		try {
-			const userid = requireAuthentication(socket);
-			await setWebsiteAdvertisingDB(userid, Number(siteid), Number(optionId), Boolean(enabled));
-			const website = await getWebsiteDataDB(userid, Number(siteid));
-			socket.emit("websiteAdvertising:loaded", { website });
-		} catch (error) { socket.emit("websiteAdvertising:error", { message: error.message || "Failed to update advertising." }); }
-	});
+			// Sends website data back to player
+			socket.emit("websiteDomainUpdate:loaded", { website });
 
-	socket.on("websiteDevAssignment:request", async ({ siteid, track, assigned } = {}) => {
-		try {
-			const userid = requireAuthentication(socket);
-			await setWebsiteDevAssignmentDB(userid, Number(siteid), track, Boolean(assigned));
-			const website = await getWebsiteDataDB(userid, Number(siteid));
-			socket.emit("websiteDevAssignment:loaded", { website });
-		} catch (error) { socket.emit("websiteDevAssignment:error", { message: error.message || "Failed to update worker assignment." }); }
-	});
-
-	socket.on("websitePublish:request", async ({ siteid } = {}) => {
-		try {
-			const userid = requireAuthentication(socket);
-			await publishWebsiteVersionDB(userid, Number(siteid));
-			const website = await getWebsiteDataDB(userid, Number(siteid));
-			socket.emit("websitePublish:loaded", { website });
-		} catch (error) { socket.emit("websitePublish:error", { message: error.message || "Failed to publish version." }); }
+		} catch (error) { 
+			console.error("Failed to update website domain:", error);
+			// Sends error back to player
+			socket.emit("websiteDomainUpdate:error", { message: error.message || "Failed to update domain." }); }
 	});
 
 }
